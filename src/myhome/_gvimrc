@@ -1,0 +1,81 @@
+" usuallly named '_gvimrc' or '.gvimrc'
+
+nmap <Leader>XXX  :tabedit ++bin $HOME/.gvimrc <Enter>
+command XXX tabedit ++bin $HOME/.gvimrc
+
+colorscheme default
+syntax on
+
+set guioptions=aegmi
+set guitablabel=%N\ %f
+set hlsearch
+"~~ 0:never 1:if more than one tab page 2: always
+set showtabline=1
+scriptencoding utf-8
+set listchars=nbsp:¬,eol:¶,tab:>-,trail:·,extends:»,precedes:«
+scriptencoding
+
+"~~ Convenient command to see the difference between the current buffer and the
+"~~ file it was loaded from, thus the changes you made.
+function GoWide()
+  set columns=180
+  vsplit
+endfunction
+"~~ command Wide set columns=180
+command -nargs=? -complete=file WWide :call GoWide(<f-args>)
+
+if has("gui_running")
+  if has("win32unix")
+    "~~ colorscheme jellybeans
+    colorscheme koehler
+    "~~ colorscheme hybrid
+    "~~ colorscheme grb256
+    set lines=55 columns=90
+    set cmdheight=4
+    winpos 250 100
+    set guifont=Monospace\ 9
+  elseif has("win32")
+    colorscheme koehler
+    "~~ colorscheme jellybeans
+    "~~ colorscheme hybrid
+    "~~ colorscheme grb256
+    set lines=66 columns=90
+    set cmdheight=5
+    "~~ let &guioptions = substitute(&guioptions, "t", "", "g")
+    "set guifont=Lucida_Console:h9:cANSI
+    "set guifont=@MingLiU:h9:cANSI
+    "set guifont=@MingLiU:h10:cANSI
+    " set guifont=@NSimSun:h8:cANSI
+    set guifont=@NSimSun:h10:cANSI
+  elseif has("mac")
+    colorscheme koehler
+    set lines=72 columns=86
+    set cmdheight=5
+  endif
+endif
+
+"~~ Indent Guides  plugin
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_space_guides = 1
+let g:indent_guides_guide_size = 1
+let g:indent_guides_start_level = 2
+let g:indent_guides_auto_colors = 0
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=lightgrey guibg=#333333
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=lightgrey guibg=#333333
+autocmd VimEnter,Colorscheme * :hi ColorColumn ctermbg=lightgrey guibg=#333333
+
+"~~ override ColorColumn to make it light grey
+if exists('+colorcolumn')
+	set colorcolumn=80
+	"~~~ hi ColorColumn ctermbg=lightgrey guibg=lightgrey
+	hi ColorColumn ctermbg=lightgrey guibg=#333333
+else
+  au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+endif
+
+" When started as "evim", evim.vim will already have done these settings.
+if v:progname =~? "evim"
+  finish
+endif
+
+"eof

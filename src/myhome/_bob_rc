@@ -81,11 +81,17 @@ export PATH="/usr/local/sbin:$PATH"
 
 ### overdesigned POS ###  TODO: simplify
 
+### get actual directory that _bob_rc is executing in to find rest of files
+## echo ${BASH_SOURCE[0]}
+fname=`readlink "${BASH_SOURCE[0]}"`
+dname=`dirname $fname`
+## echo $dname
+
 # source aliases and functions
-safesource ~/_bob_func
+safesource $dname/_bob_func
 
-safesource ~/_bob_env
+safesource $dname/_bob_env
 
-safesource ~/_bob_alias
+safesource $dname/_bob_alias
 
 # vim: set filetype=sh sw=3 sts=3 ts=3 expandtab :

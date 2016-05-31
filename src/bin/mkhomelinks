@@ -1,0 +1,26 @@
+# refresh my git config... :-)
+git config --global user.name  "Bob Raftery"
+git config --global user.email "robraft@gmail.com"
+# git also looks in $VISUAL and $EDITOR environment variables for editor
+git config --global core.editor vim
+git config --global color.ui auto
+
+# make links from ~ to ...src/...
+function mylink() {
+  cd $HOME
+  local ROBRAFT=GitHub/robraft/src
+  ln -sfF $ROBRAFT/$1 ./$2
+}
+
+mylink myhome/_bob_rc .bash_profile
+mylink myhome/_bob_rc .profile
+
+mylink myhome/_gvimrc .gvimrc
+mylink myhome/_vimrc  .vimrc
+
+mylink bin bin
+
+cd
+ln -sfF Github proj
+
+# vim :set syntax=sh:

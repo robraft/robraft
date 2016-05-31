@@ -3,13 +3,15 @@
 # ///////////////////////////////////////////////////////////////////////////
 # ////  VANILLA ALIASES
 # ///////////////////////////////////////////////////////////////////////////
-alias      ..="cd .."
-alias     ...="cd ../.."
+alias      ..="cdvoodoo .."
+alias     ...="cdvoodoo ../.."
+alias    apps='ps axxx | grep appserver_cm[1-9] | awk "/\/bin\/sh/ {split(\$7,fld,/_/); print fld[1]}" | sort | uniq'
 alias     cls="clear"
 alias       h="history"
 alias       j="jobs"
 alias      l.="ls -d .*"
-alias    apps='ps axxx | grep appserver_cm[1-9] | awk "/\/bin\/sh/ {split(\$7,fld,/_/); print fld[1]}" | sort | uniq'
+alias      me="cdvoodoo ~/proj/robraft"
+alias    proj="cdvoodoo ~/proj"
 alias    srvs='ps axxx | grep appserver_cm[1-9] | awk "/\/bin\/sh/ {print \$7}" | sort | uniq'
 
 # ///////////////////////////////////////////////////////////////////////////
