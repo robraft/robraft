@@ -4,6 +4,7 @@ git config --global user.email "robraft@gmail.com"
 # git also looks in $VISUAL and $EDITOR environment variables for editor
 git config --global core.editor vim
 git config --global color.ui auto
+git config --global push.default simple
 
 # make links from ~ to ...src/...
 function mylink() {
