@@ -1,10 +1,21 @@
-# refresh my git config... :-)
+# git config's
 git config --global user.name  "Bob Raftery"
 git config --global user.email "robraft@gmail.com"
 # git also looks in $VISUAL and $EDITOR environment variables for editor
 git config --global core.editor vim
 git config --global color.ui auto
 git config --global push.default simple
+
+# git convenience aliases...
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.st status
+# git unstage fileA ...
+git config --global alias.unstage 'reset HEAD --'
+# git last ...
+git config --global alias.last 'log -1 HEAD'
+# -end-
 
 # make links from ~ to ...src/...
 function mylink() {
