@@ -1,5 +1,5 @@
 # git config's
-git config --global user.name  "Bob Raftery"
+git config --global user.name  "Bob R."
 git config --global user.email "robraft@gmail.com"
 # git also looks in $VISUAL and $EDITOR environment variables for editor
 git config --global core.editor vim
