@@ -24,6 +24,7 @@ function mylink() {
   ln -sfF $ROBRAFT/$1 ./$2
 }
 
+mylink myhome/_bashrc .bashrc
 mylink myhome/_bob_rc .bash_profile
 mylink myhome/_bob_rc .profile
 
@@ -33,6 +34,6 @@ mylink myhome/_vimrc  .vimrc
 mylink bin bin
 
 cd
-ln -sfF Github proj
+## ln -sfF Github proj
 
 # vim :set syntax=sh:

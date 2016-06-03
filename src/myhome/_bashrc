@@ -1,0 +1,152 @@
+# .bashrc by bob
+
+## UTILITY HELPERS
+##====================
+## FLAGS
+##====================
+export DROPBOX=false
+export HOMEHOME=false
+export HOSTNAME=false
+export OS_IS_DARWIN=false
+export SHELL_IS_BASH=false
+export SHELL_IS_KSH=false
+export SHELL_IS_ZSH=false
+export SHELL_IS_POSH=false
+export SHELL_IS_UNKNOWN=true
+
+[ -d $HOME/Dropbox ]            && export DROPBOX=$HOME/Dropbox
+[ -d $HOME/HOME ]               && export HOMEHOME=$HOME/HOME
+[ $(uname) == "Darwin" ]        && export OS_IS_DARWIN=true
+[ ! "x${BASH_VERSION}" = "x"  ] && export SHELL_IS_BASH=true  SHELL_IS_UNKNOWN=false
+[ ! "x${KSH_VERSION}" = "x" ]   && export SHELL_IS_KSH=true   SHELL_IS_UNKNOWN=false
+[ ! "x${ZSH_VERSION}" = "x" ]   && export SHELL_IS_ZSH=true   SHELL_IS_UNKNOWN=false
+[ ! "x${POSH_VERSION}" = "x" ]  && export SHELL_IS_POSH=true  SHELL_IS_UNKNOWN=false
+
+## MY KINDA PROMPT
+##====================
+#### for more info see...
+####  * http://en.wikipedia.org/wiki/ANSI_escape_code
+####  * http://tldp.org/HOWTO/Bash-Prompt-HOWTO/
+####  * http://invisible-island.net/xterm/ctlseqs/ctlseqs.html#VT100 Mode
+if [ $SHELL_IS_BASH ]; then
+	HOSTNAME=$(hostname -s)
+        export PS1='\[\e]0;\u@\h:\w\a\]\n\[\e[32m\]\t \u@\h:\[\e[33m\]\w\[\e[0m\]\n\$ '
+elif [ $SHELL_IS_KSH ]; then
+	typeset -l HOSTNAME=$(hostname -s)
+	PS1=$(print '\033]0;${PWD}\n\033[32m${USER}@${HOSTNAME} \033[33m${PWD/${HOME}/~}\033[0m\n$ ')
+elif [ $SHELL_IS_ZSH ]; then
+	HOSTNAME=$(hostname -s)
+	PS1='(%n@%m)[%h] %~ %% '
+elif [ $SHELL_IS_POSH ]; then
+	HOSTNAME=$(hostname -s)
+	PS1="$ "
+elif [ $SHELL_IS_UNKNOWN ]; then
+	HOSTNAME=$(hostname -s)
+	PS1="$ "
+else
+        # safety net ... :-)
+	HOSTNAME=$(hostname -s)
+	PS1="$ "
+fi
+
+## UMASK
+##====================
+umask 0022
+
+# squirt a null out every 59 secs to keep alive the connection
+# perl -e 'sleep 59 && print STDERR "\x00" while 1' &
+
+# set I18N to POSIX Locale
+## export LC_ALL=C
+
+# so mc (Midnight Commander) will display correctly
+## export TERM=xterm-color
+## export TERM=rxvt-cygwin
+
+## ALIASES
+##================================================
+
+[[ -f /usr/bin/mc ]] && alias mc="mc -a"
+[[ -f /usr/share/mc/bin/mc-wrapper.sh ]] && alias mc='. /usr/share/mc/bin/mc-wrapper.sh -a'
+
+## PATH and MANPATH
+##================================================
+[ -d /Applications/Xcode.app/Contents/Developer/usr/bin ]  &&
+        export PATH=$PATH:/Applications/Xcode.app/Contents/Developer/usr/bin
+[ -d /Applications/Xcode.app/Contents/Developer/usr/share/man ]  &&
+        export MANPATH=$MANPATH:/Applications/Xcode.app/Contents/Developer/usr/share/man
+
+
+vboxssh() {
+        ssh $3 $1@$(VBoxManage guestproperty get "$2" "/VirtualBox/GuestInfo/Net/0/V4/IP" | awk '{ print $2 }')
+}
+
+vboxscp() {
+        scp $3 $1@$(VBoxManage guestproperty get "$2" "/VirtualBox/GuestInfo/Net/0/V4/IP" | awk '{ print $2 }'):$4
+}
+
+ipaddr() {
+# arch linux style...
+        ip -4 addr show dev enp0s3 | awk -- '/inet / {print $2;}'
+}
+
+spinup() {
+  for i in 0 1 2 ; do
+    echo "Spinnning up ansible${i} ..."
+    VBoxHeadless -s "ansible${i}" &> ~/logs/ansible${1}.log &
+    read -t 5
+  done
+  echo -e '\n*done*'
+}
+
+spindown() {
+  for i in 0 1 2 ; do
+    ssh -T pse@$(VBoxManage guestproperty get "ansible${i}" "/VirtualBox/GuestInfo/Net/0/V4/IP" | awk '{ print $2 }') <<EOF
+sudo -S shutdown now
+root
+EOF
+  done
+  echo -e '\n*done*'
+}
+
+spinhosts() {
+  echo "making 'hosts' file ..."
+  HOSTS=/tmp/hosts
+  echo -e "# $(date)" > ${HOSTS}
+  echo -e "127.0.0.1\tlocalhost" >> ${HOSTS}
+  echo -e "::\t\tlocalhost" >> ${HOSTS}
+  ifconfig en0 | awk -- '/inet / { print $2 "\thome"; }' >> ${HOSTS}
+  for i in 0 1 2 ; do
+    echo -e $(VBoxManage guestproperty get "ansible${i}" "/VirtualBox/GuestInfo/Net/0/V4/IP" | awk '{ print $2 }') "\tansible${i}" >> ${HOSTS}
+  done
+  echo "#eof" >> ${HOSTS}
+
+  echo "creating 'here doc' ..."
+  HERE_DOC=/tmp/here_doc
+  echo 'sudo -S bash -s' > ${HERE_DOC}
+  echo 'root' >> ${HERE_DOC}
+  echo 'mv /etc/hosts /etc/hosts.bak' >> ${HERE_DOC}
+  echo 'cat > /etc/hosts' >> ${HERE_DOC}
+  cat  ${HOSTS} >> ${HERE_DOC}
+  echo '' >> ${HERE_DOC}
+  'rm'   ${HOSTS}
+
+  echo "syncing 'hosts' file ..."
+  for i in 0 1 2 ; do
+    echo -e "\nsyncing 'ansible${i}' ..."
+    ssh -T pse@$(VBoxManage guestproperty get "ansible${i}" "/VirtualBox/GuestInfo/Net/0/V4/IP" | awk '{ print $2 }') 'bash -s' < ${HERE_DOC}
+  done
+
+  echo -e '\nsyncing UncleMilty ...'
+  bash -s < ${HERE_DOC}
+
+  'rm' ${HERE_DOC}
+  echo -e '\n*done*'
+}
+
+#vim: set ts=2 sts=2 sw=2 sws=2 noexpandtab:
+
+export NVM_DIR="/Users/braftery/.nvm"
+[[ -s "$NVM_DIR/nvm.sh" ]]        && . "$NVM_DIR/nvm.sh"  # This loads nvm
+[[ -r $NVM_DIR/bash_completion ]] && . $NVM_DIR/bash_completion
+
