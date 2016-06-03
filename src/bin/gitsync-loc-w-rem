@@ -1,0 +1,7 @@
+echo thank you http://www.ocpsoft.org/tutorials/git/reset-and-sync-local-respository-with-remote-branch/
+
+echo run following cmds and update 'origin' and 'master' as needed ...
+echo git fetch origin
+echo git reset --hard origin/master
+echo git clean -f -d
+
