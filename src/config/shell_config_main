@@ -1,4 +1,4 @@
-# .bob_rc
+# file: shell_config_main
 
 ## needed by bash to enable extended glob patterns ...
 ## may not be supported by other shells so route all output to the bitbucket
@@ -81,17 +81,17 @@ export PATH="/usr/local/sbin:$PATH"
 
 ### overdesigned POS ###  TODO: simplify
 
-### get actual directory that _bob_rc is executing in to find rest of files
-## echo ${BASH_SOURCE[0]}
+### get actual dir that 'shell_config_main' is "in" to find rest of the files
 fname=`readlink "${BASH_SOURCE[0]}"`
 dname=`dirname $fname`
-## echo $dname
 
 # source aliases and functions
-safesource $dname/_bob_func
+safesource $dname/shell_funcs
 
-safesource $dname/_bob_env
+safesource $dname/shell_env_vars
 
-safesource $dname/_bob_alias
+safesource $dname/shell_aliases
 
-# vim: set filetype=sh sw=3 sts=3 ts=3 expandtab :
+safesource $dname/shell_prompt
+
+# vim: set filetype=sh sw=2 sts=2 ts=2 expandtab :

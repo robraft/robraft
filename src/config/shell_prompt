@@ -1,69 +1,83 @@
-# .bob_alias
+# file: shell_prompt
 
-# ///////////////////////////////////////////////////////////////////////////
-# ////  VANILLA ALIASES
-# ///////////////////////////////////////////////////////////////////////////
-alias      ..="cdvoodoo .."
-alias     ...="cdvoodoo ../.."
-alias    apps='ps axxx | grep appserver_cm[1-9] | awk "/\/bin\/sh/ {split(\$7,fld,/_/); print fld[1]}" | sort | uniq'
-alias     cls="clear"
-alias      gv="/usr/local/bin/gvim"
-alias       h="history"
-alias       j="jobs"
-alias      l.="ls -d .*"
-alias      me="cdvoodoo ~/proj/robraft"
-alias    proj="cdvoodoo ~/proj"
-alias    srvs='ps axxx | grep appserver_cm[1-9] | awk "/\/bin\/sh/ {print \$7}" | sort | uniq'
+# my kinda prompt
+#### for more info see...
+####  * http://en.wikipedia.org/wiki/ANSI_escape_code
+####  * http://tldp.org/HOWTO/Bash-Prompt-HOWTO/
+####  * http://invisible-island.net/xterm/ctlseqs/ctlseqs.html#VT100 Mode
+# export PS1='\[\e]0;\u@\h:\w\a\]\n\[\e[32m\]\t \u@\h:\[\e[33m\]\w\[\e[0m\]\n\$ '
+# export PS1="\[\e]0;\u@${HOSTNAME,,}:\w\a\]\n\[\e[32m\]\t \u@${HOSTNAME,,}:\[\e[33m\]\w\[\e[0m\]\n\$ "
 
-alias      st="/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"
-alias     sub="/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"
-alias    subl="/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"
+## export CDPATH='.:~:~/MKSprojects/RFS/FCA:~/proj'
 
-# ///////////////////////////////////////////////////////////////////////////
-# ////  CONDITIONAL ALIASES
-# ///////////////////////////////////////////////////////////////////////////
-[[ -d /mnt/c ]] && alias outlook="cmd /c start '' 'C:\Program Files (x86)/Microsoft Office\Office14\OUTLOOK.EXE'"
-[[ -d /opt/norkom/fca ]] && alias fca="cd /opt/norkom/fca"
-[[ -f ~/.ssh/proxyon ]]  && alias proxyon="echo please use proxyon2"
-[[ -f ~/.ssh/proxyon2 ]]  && alias proxyon2=". ~/.ssh/proxyon2"
-[[ -f ~/.ssh/proxyoff ]] && alias proxyoff=". ~/.ssh/proxyoff"
-[[ -f /usr/bin/mc ]]     && alias mc='/usr/bin/mc -P ~/.mc.dir  "$PWD" ~ && export MCDIR_="$(< ~/.mc.dir )" && cd "$MCDIR_" && rm ~/.mc.dir > /dev/null'
-[[ -f /usr/share/mc/bin/mc-wrapper.sh ]] && alias mc='. /usr/share/mc/bin/mc-wrapper.sh -a'
+## _template='time user(at)host(colon)pwd(newline)(ltbracket)shell version(rtbracket) dollarsign '
 
-# ///////////////////////////////////////////////////////////////////////////
-# ////  PROBE LS CMD TO DETERMINE ACCEPTABLE PARMS
-# ///////////////////////////////////////////////////////////////////////////
-ls --color=auto >/dev/null 2>&1    && LS_COLOR_PARM_="--color=auto"
-ls --color=auto >/dev/null  2>&1   || LS_COLOR_PARM_="-G"
-ls $LS_COLOR_PARM_ >/dev/null 2>&1 || LS_COLOR_PARM_=
-ls --group-directories-first >/dev/null 2>&1 && LSGRPDIR_PARM_="--group-directories-first"
-ls --group-directories-first >/dev/null 2>&1 || LSGRPDIR_PARM_=" "
+safepathmunge ~/bin
 
-alias       ls="ls -F $LS_COLOR_PARM_ $LSGRPDIR_PARM_"
-alias       ll="ls -lF $LS_COLOR_PARM_ $LSGRPDIR_PARM_"
-alias       lo="ls -oF $LS_COLOR_PARM_ $LSGRPDIR_PARM_"
+case $THIS_SHELL in
+  bash) e="\\e" ; n="\\n" ;;
+  ksh)  e=''  ; n='
+'  ; a='' ;;
+  zsh)  e=''    ; n=''    ;;
+  *)    e="-e-" ; n="-n"  ;;
+esac
 
-# ///////////////////////////////////////////////////////////////////////////
-# ////  PROBE CHMOD CMD TO DETERMINE IF VERBOSE IS AN ACCEPTABLE PARM
-# ///////////////////////////////////////////////////////////////////////////
-VERBOSE_=
-VERBOSERM_=
-touch scratch.scratch
-chmod -v 777 scratch.scratch > /dev/null 2>&1 && VERBOSE_=-v
-rm -e scratch.scratch > /dev/null 2>&1 && VERBOSERM_=-e
-rm scratch.scratch > /dev/null 2>&1
-alias chgrp="chgrp $VERBOSE_"
-alias chmod="chmod $VERBOSE_"
-alias    cp="cp $VERBOSE_"
-alias    mv="mv $VERBOSE_"
-alias    rm="rm $VERBOSE_ $VERBOSERM_"
+ereset='${e}[0m'
+ecolon='${e}[37m'
+eshell='${e}[33m'
+case $THIS_ENV in
+  PRD)
+    eusrnode='${e}[91;40m' ; ## bright/bold red-fg; normal black-bg
+    epwd='${e}[36;40m' ;     ## normal cyan-fg; normal black-bg
+    etime='${e}[32;40m' ;;   ## normal green-fg; normal black-bg
+  TST)
+    eusrnode='${e}[32;40m' ; ## normal green-fg; black-bg
+    epwd='${e}[36;40m' ;     ## normal cyan-fg; normal black-bg
+    etime='${e}[35;40m' ;;   ## normal magenta-fg; normal black-bg
+  DEV)
+    eusrnode='${e}[32;40m' ; ## normal green-fg; black-bg
+    epwd='${e}[35;40m' ;     ## normal magenta-fg; normal black-bg
+    etime='${e}[36;40m' ;;   ## normal cyan-fg; normal black-bg
+  UNK)
+    eusrnode='${e}[32;40m' ; ## normal green-fg; black-bg
+    epwd='${e}[36;40m' ;     ## normal cyan-fg; normal black-bg
+    etime='${e}[35;40m' ;;   ## normal magenta-fg; normal black-bg
+esac
+
+## set local and remote prompts...
+case $THIS_SHELL in
+  bash)
+    ## XS1="\n${eusrnode}`whoami`@`hostname`${ecolon}:${epwd}\\${PWD}${ereset}\n${eshell}[${THIS_SHELL} ${THIS_VERSION}]${ereset} $ "
+    ## PS1=$(eval echo\ \"$XS1\")
+    PS1="\[${e}]0;\u@\h:\w\a\]${n}\[\e[35;40m\]\t\[\e[32;40m\] \u@\h\[\e[37m\]:\[\e[36;40m\]\w\[\e[0m\]${n}\[\e[33m\][${THIS_SHELL} ${THIS_VERSION}]\[\e[0m\] $ "
+
+    if [[ "$IS_REMOTE" == "1" ]] ; then
+      PS1="\[${e}]0;\u@\h:\w\a\]${n}\[${e}[36m\]\t\[${e}[32m\] \u@\h\[${e}[37m\]:\[${e}[33m\]\w\[${e}[0m\]${n}\[${e}[33m\][${THIS_SHELL} ${THIS_VERSION}]\[\e[0m\] $ "
+      if [[ "$THIS_ENV" == "PRD" ]] ; then
+        PS1="\[${e}]0;\u@\h:\w\a\]${n}\[${e}[32m\]\t\[${e}[91m\] \u@\h\[${e}[37m\]:\[${e}[36m\]\w\[${e}[0m\]${n}\[${e}[33m\][${THIS_SHELL} ${THIS_VERSION}]\[\e[0m\] $ "
+      fi
+    fi
+    ;;
+  ksh)
+    case $THIS_VERSION in
+      "88"|"93") PS1="
+${eusrnode}`whoami`@`hostname`${ecolon}:${epwd}\${PWD}${ereset}
+${eshell}[${THIS_SHELL} ${THIS_VERSION}]${ereset} $ " ;;
+    #   "93") PS1="${e}]0;\u@\h:\w\a
+# ${e}[36m\`date +%T\`${e}[32m `whoami`@`hostname`${e}[37m:${e}[35m\${PWD}${e}[0m
+# ${e}[33m[${THIS_SHELL} ${THIS_VERSION}]${e}[0m $ " ;;
+    #   xx) ;;
+    esac ;;
+  zsh) ;; ## already set by .zshrc
+  *) ;; ## some other prompt
+esac
 
 
 # ///////////////////////////////////////////////////////////////////////////
 #  based on https://gist.github.com/skizzybiz/3789296
 #    and then liberally "bobified" to suit my sense of neatness & aesthetics
 # ///////////////////////////////////////////////////////////////////////////
-# Define colors
+# (LOCAL CONSTANTS) Define colors
 RESET='\[\033[00m\]'
 
 BKFG='\[\033[0;30m\]'    # black   foreground
@@ -107,6 +121,14 @@ SYMBUG='⍾ '
 SYMDELTA='▲'
 SYMBRANCH='〒'
 SYMALIEN='👽'
+
+function is_node_project {
+  [[ -f ./package.json ]]
+}
+
+function get_node_version {
+  nvm current
+}
 
 # Detect whether the current directory is a git repository.
 function is_git_repository {
@@ -184,6 +206,11 @@ function set_bash_prompt () {
     set_git_branch
   fi
 
+  NODEVER=''
+  if is_node_project ; then
+    NODEVER="/node $(get_node_version)"
+  fi
+
   # Fill spaces between the left and right halves
   strippedbranch=`echo $BRANCH | sed 's|\\\\\\[[^]]*\\]||g'`
   ## lefthalf="`whoami`@`hostname -s` `pwd | sed "s|$HOME|~|"` $strippedbranch"
@@ -196,11 +223,14 @@ function set_bash_prompt () {
 
   # Set the bash prompt variable.
   PS1="\n$CYFG\t $GNFG\u@\h$RESET:$YLFG\w $fill${BRANCH}\n\
-$YLFG[$THIS_SHELL $THIS_VERSION] ${RESET}${PROMPT_SYMBOL} "
+$YLFG[$THIS_SHELL $THIS_VERSION${NODEVER}] ${RESET}${PROMPT_SYMBOL} "
 }
 
 # Tell bash to execute this function just before displaying its prompt.
 PROMPT_COMMAND=set_bash_prompt
 # ///////////////////////////////////////////////////////////////////////////
 
-# vim: set filetype=sh sws=2 sw=2 sts=2 ts=2 noexpandtab :
+export PS1 LS_COLORS
+
+# vim: set filetype=sh sws=2 sw=2 sts=2 ts=2 expandtab :
+

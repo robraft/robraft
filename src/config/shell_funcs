@@ -1,4 +1,4 @@
-# .func
+# file: shell_funcs
 
 #///////////////////////////////////////////////////////////////////////////
 #  UTILITY FUNC'S
@@ -138,47 +138,8 @@ if [[ $? == 0 ]] ; then
 fi
 
 #///////////////////////////////////////////////////////////////////////////
-#  PS-WEB  &  PS-APPS
-#///////////////////////////////////////////////////////////////////////////
-
-function ps_web {
-   # looks at everything running and filters on "ewsConfig" to find
-   # the tier-1 web servers.  Column #9 has the config filename in it.
-   # strips off everything except the last directory name from col #9,
-   # then outputs the directory name, sorts it and unique's it..
-   # then grep's at the end to filter out some random garbage from the awk pgm
-   #//////////////////////////////////////////////////////////////////////////
-   ps axw |
-      awk '
-         /ewsConfig/ {
-            str=$9;
-            ignorethis=gsub("/opt/ewsConfig/", "", str);
-            ignorethis=gsub("/.*","",str);
-            print str;
-            }' |
-      sort |
-      uniq |
-      grep -v '[^A-Za-z0-9_-]'
-}
-
-
-# list appservers currently running...
-function ps_apps {
-   ps ax |
-      awk -- '(!/java/) && /startServer/ {printf "%s\n",$7}' |
-      sort -k2
-}
-
-#///////////////////////////////////////////////////////////////////////////
 #  LOG FUNCTIONS
 #///////////////////////////////////////////////////////////////////////////
 
-# tail logs
-### supresses superflous distracting error messages by sending them to /dev/null
-function tl {
-   tail -f server.log 2>/dev/null ||
-   tail -f access.log 2>/dev/null ||
-   tail -f SystemOut.log 2>/dev/null
-}
 
 # vim: set filetype=sh sw=3 sts=3 ts=3 expandtab :
