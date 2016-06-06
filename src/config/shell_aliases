@@ -12,6 +12,8 @@ alias       h="history"
 alias       j="jobs"
 alias      l.="ls -d .*"
 alias      me="cdvoodoo ~/proj/robraft"
+alias  nvmins="nvm install $1 --reinstall-packages-from=node"
+alias  nvmupd="nvm install node --reinstall-packages-from=node"
 alias    proj="cdvoodoo ~/proj"
 alias    srvs='ps axxx | grep appserver_cm[1-9] | awk "/\/bin\/sh/ {print \$7}" | sort | uniq'
 

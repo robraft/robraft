@@ -21,7 +21,7 @@ git config --global alias.last 'log -1 HEAD'
 function mylink() {
   cd
   local ROBRAFT=GitHub/robraft/src
-  unlink ./$2
+  [[ -f ./$2 ]] && unlink ./$2
   ln -sfF $ROBRAFT/$1 ./$2
 }
 
@@ -32,10 +32,13 @@ mylink config/shell_config_main .profile
 mylink config/_gvimrc .gvimrc
 mylink config/_vimrc  .vimrc
 
+mylink config/npmrc .npmrc
+
 mylink bin bin
 
 cd
 unlink proj 2>>/dev/null
-ln -sfF Github proj
+unlink gh 2>>/dev/null
+ln -sfF Github gh
 
 # vim :set syntax=sh :
