@@ -1,0 +1,39 @@
+[filter "lfs"]
+  clean = git-lfs clean %f
+  smudge = git-lfs smudge %f
+  required = true
+
+[user]
+  name = Bob R.
+  email = robraft@gmail.com
+
+[core]
+  editor = vim
+
+[color]
+  ui = auto
+
+[push]
+  default = simple
+
+[alias]
+  ad = add -v
+  br = branch -v
+  ci = commit -v
+  cl = clone -v
+  co = checkout -v
+  fe = fetch -v
+  me = merge -v
+  st = status
+  add = add -v
+  clone = clone -v
+  commit = commit -v
+  fetch = fetch -v
+  merge = merge -v
+  pull = pull -v
+  push = push -v
+  last = log -1 HEAD
+  unstage = reset HEAD --
+
+[remote "origin"]
+        fetch = +refs/heads/*:refs/remotes/origin/*

@@ -20,7 +20,7 @@ git config --global alias.last 'log -1 HEAD'
 # make links from ~ to ...src/...
 function mylink() {
   cd
-  local ROBRAFT=GitHub/robraft/src
+  local ROBRAFT=gh/robraft/src
   [[ -f ./$2 ]] && unlink ./$2
   ln -sfF $ROBRAFT/$1 ./$2
 }
@@ -34,11 +34,8 @@ mylink config/_vimrc  .vimrc
 
 mylink config/npmrc .npmrc
 
-mylink bin bin
+mylink config/gitconfig .gitconfig
 
-cd
-unlink proj 2>>/dev/null
-unlink gh 2>>/dev/null
-ln -sfF Github gh
+mylink bin bin
 
 # vim :set syntax=sh :
