@@ -1,0 +1,80 @@
+Robert W. Raftery 
+_____________________________________________________________________________
+email: braftery@earthlink.net	1907 N. Deerpark Dr., #533
+home: 714-420-3005	Fullerton, CA 92831-1584
+
+Qualifications
+
+	Professional Experience:
+Possess excellent oral and written communication skills; function best in a collaborative environment where teambuilding is valued; flexible, resourceful and a self-starter.
+
+	Technical Experience:	
+* Experienced using the following languages: Microsoft VB, MS-Access, Delphi, Java, HTML, JavaScript, SQL, Lotus Notes, C, C++, xBase, RPG, COBOL, FORTRAN
+* Experienced using the following OS & NOS platforms: Win 9x, Win-NT 4.0, Novell Netware, IBM System 36, HP3000
+* Developed, maintained and deployed applications on the previous list of platforms.
+* Have used the following RDBMS's: MS-SQL Server, Oracle, Interbase.
+* Experienced using the following web servers: IIS, Lotus Domino
+* Dealt with the full lifecycle of application development, including: interviewing users in order to develop the business requirements and clarify the application scope, developing and testing the application, deploying and maintaining the application, training and supporting end users, and producing both technical and user documentation.
+* Experienced with balancing business requirements and technical requirements.  Technical concerns include design issues, performance issues, data access concurrency issues and user-interface considerations with deployment and maintenance concerns in a networked, heterogenous, rapidly changing, multi-platform environment.
+
+Employment
+
+1990 - Present	Systems Specialist II, Union Bank Of California
+Current responsibilities include technical lead on a project to bring a web-based, n-tier, client-server application in-house from one of the business units The application uses IIS, MS SQL Server and ASP running on an NT Server.  This also involves extensive coordination with the various users and a contractor in the Business Unit, as well as technical infrastructure department(s) and an emerging Intranet department within the Bank.
+
+Additional responsibilities include being an "internal consultant," as needed, on a variety of technical issues.
+
+Previous projects included:
+* Developing a web application using HTML, JavaScript and Java.
+* Performing extensive maintenance, development and documentation on a VB application using one MS-Access database for the report engine and another for the data store.
+* Creating a classic client-server Delphi application which accessed data stored in an Interbase-hosted database.
+* Leading the technical effort on a project to bring the maintenance and development of a very large, multi-database, Lotus Notes application in-house.
+
+Employment  (cont'd)
+
+1987 - 1990	Systems Manager & Programmer Analyst, Paul Munroe Hydraulics
+High-visibility, hands-on position.  Responsible for maintaining HP3000 computer with 120 users and a wide-area network.  Programmed in PowerHouse (Quiz, QTP, etc.)  Extensive analysis and design with emphasis on directly coordinating with end-users to determine business requirements.
+
+1985 - 1987	Consultant Programmer Analyst, Self Employed
+Developed, debugged and maintained interactive and batch applications written in C, xBase, Lotus 1-2-3, COBOL and RPGII; supported and trained end users.  Computers used:IBM PC, IBM System 36, IBM System 34
+
+1983 - 1985	Senior IBM System 36 Programmer Analyst, Leadtec Systems Inc.
+Application was a interactive piecework payroll system for the apparel industry written in COBOL. Computers used: IBM System 36, IBM PC
+
+1981 - 1983	Programmer Analyst, Germain's Inc.
+Developed, debugged and maintained interactive and batch applications written in RPGII; supported and trained end users.  Computer used:IBM System 34
+
+1979 - 1981	Programmer Analyst, Shirley Software Systems
+Developed, debugged and maintained batch FORTRAN programs to handle PERT/CPM scheduling.  Computers used: HP 3000, Prime and DEC.
+
+
+
+Education
+
+2000	IBM Visual Age for Java, IBM Education Center
+	IBM Websphere 3.0, IBM Education Center
+
+1999	O-O Programming with Java, IBM Education Center
+	Introduction to Data Modeling
+
+1997	Supporting MS Windows NT 4.0 Core Technologies, Infotec Commercial Systems
+	Managing Multiple Priorities and Deadlines, Data-Tech, Inc
+
+1997	Lotus Notes Version 4 Application Development I & II, Infotec Commercial Systems
+	Lotus Notes Version 4 Systems Management I & II, Infotec Commercial Systems
+
+1996	How To Design Effective User Interfaces, Human Factors International, Inc.
+	Practical Usability Testing, Human Factors International, Inc.
+
+1996	OO Programming with Borland Delphi, Cal Poly Pomona
+
+1995	DCI's Stategies & Tools for Successful Data Warehouses Seminar
+
+1989	HP3000 System Administration, Hewlett Packard
+
+1989	Math Major (incomplete), California Polytechnic State University Pomona
+
+1978	Computer Programming and Operations, Control Data Institute
+
+
+

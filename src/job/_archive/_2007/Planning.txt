@@ -1,0 +1,51 @@
+RESUME's
+
+Technical Lead
+   Lead teams of up to 5 developers
+   Mentored junior team members
+   Analysis, documentation, UML design, ERD Diagrams, ERWin
+   Project plans in MS-Project
+   Estimates
+   User Documentation
+   Technical Documentation
+   Server setup, configuration, monitoring (App Server's, File/Print servers)
+   Network setup, configuration, troubleshooting
+   MS Windows 2000/XP, Apple Mac OS X, Unix / Linux / IBM IAX
+
+Web Developer, front-end 
+   HTML, XHTML, CSS
+   XML, XSLT, XML DTD, XML Schema
+   JavaScript/ECMAScript, VB Script
+
+Web Developer, Java J2EE and Oracle 9i
+   UML - Collaboration Diagrams, Package Diagrams, Class Diagrams
+   Java EJB - Session Beans, Entity Beans CMP
+   Java JSP, Java Servlets, Java Collections Framework, Java Threading
+   Junit
+   Jakarta/Apache Struts
+   Apache Log4J, Custom Log4J Appender, Customer Log4J Formatter
+   Oracle 9i Views, and scripts
+   Oracle SQL-Plus
+   Automated build and deployment using --
+      Apache Ant, Windows Shell Scripts, Unix Shell Scripts
+   Source control - PVCS and MKS 
+
+Web Developer, MS ASP and MS SQL Server and Crystal Reports
+   Configured and managed MS IIS Server and MS SQL Server
+   MS ASP using JScript, VBScript on both the client-side and the server-side
+   Reports written in Seagate Crystal Reports
+   MS-SQL Server UDF (User-Defined Functions), Stored Procedures, Views
+
+Database Developer, Oracle and MS-SQL Server
+   Oracle 9i Views, queries and scripts
+   Oracle SQL-Plus scripts
+   Static optimization of Oracle views and queries using plan-table
+   MS-SQL Server UDF (User-Defined Functions), Stored Procedures, Views
+   Static optimization of TSQL views and queries
+
+Client-server Developer
+   MS Visual Basic
+   MS Access
+   Borland's InterSolve DB
+
+#end#
