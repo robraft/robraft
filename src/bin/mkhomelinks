@@ -1,41 +1,25 @@
-# git config's
-git config --global user.name  "Bob R."
-git config --global user.email "robraft@gmail.com"
-# git also looks in $VISUAL and $EDITOR environment variables for editor
-git config --global core.editor vim
-git config --global color.ui auto
-git config --global push.default simple
-
-# git convenience aliases...
-git config --global alias.co checkout
-git config --global alias.br branch
-git config --global alias.ci commit
-git config --global alias.st status
-# git unstage fileA ...
-git config --global alias.unstage 'reset HEAD --'
-# git last ...
-git config --global alias.last 'log -1 HEAD'
-# -end-
 
 # make links from ~ to ...src/...
-function mylink() {
+## [[ ! -f $HOME/gh/rr ]] && ln -s $HOME/gh/robraft $HOME/gh/rr
+# p1=home filename
+# p2=git repo filename
+function lnk_home_to_git_repo() {
   cd
-  local ROBRAFT=gh/robraft/src
-  [[ -f ./$2 ]] && unlink ./$2
-  ln -sfF $ROBRAFT/$1 ./$2
+  local GIT_REPO=gh/rr/src
+  [[ -f ./$1 ]] && unlink ./$1
+  ln -sfF $GIT_REPO/$2 ./$1
 }
 
-mylink config/_bashrc .bashrc
-mylink config/shell_config_main .bash_profile
-mylink config/shell_config_main .profile
+lnk_home_to_git_repo .bashrc         cfg/_bashrc
+lnk_home_to_git_repo .bash_profile   cfg/shell_config_main
+lnk_home_to_git_repo .profile        cfg/shell_config_main
+lnk_home_to_git_repo .gvimrc         cfg/_gvimrc
+lnk_home_to_git_repo .vimrc          cfg/_vimrc
+lnk_home_to_git_repo .npmrc          cfg/npmrc
+lnk_home_to_git_repo .gitconfig      cfg/gitconfig
+lnk_home_to_git_repo .git-prompt.sh  bin/git-prompt.sh
 
-mylink config/_gvimrc .gvimrc
-mylink config/_vimrc  .vimrc
-
-mylink config/npmrc .npmrc
-
-mylink config/gitconfig .gitconfig
-
-mylink bin bin
+## lnk_home_to_git_repo bin           bin
 
 # vim :set syntax=sh :
+
