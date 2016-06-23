@@ -347,10 +347,11 @@ let g:syntastic_vim_vimlint_quiet_messages = {
 """ if exists("/opt/bin/jsl.exe")
 """   let g:syntastic_javascript_jsl_exec  = '/opt/bin/jsl.exe'
 """ endif
-""" if exists("c:/opt/bin/jsl.exe")
-"""   let g:syntastic_javascript_jsl_exec  = 'c:/opt/bin/jsl.exe'
+""" if exists("./node_modules/.bin/eslint")
+  let g:syntastic_javascript_eslint_exec  = './node_modules/.bin/eslint'
 """ endif
-""" let g:syntastic_javascript_checkers = ["jsl", "jslint"]
+""" let g:syntastic_javascript_checkers = ["jshint", "eslint"]
+let g:syntastic_javascript_checkers = ["eslint"]
 """ ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 """ let g:jshint_command = 'C:/opt/apps/NodeJSPortable/Data/node_modules/jshint/bin/jshint'
