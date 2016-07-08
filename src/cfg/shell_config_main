@@ -1,5 +1,9 @@
 # file: shell_config_main
 
+### to change your shell
+### note: make sure your shell is in /etc/shells
+## chsh -s /usr/local/bin/bash -u braftery braftery
+
 ## needed by bash to enable extended glob patterns ...
 ## may not be supported by other shells so route all output to the bitbucket
 shopt -s extglob > /dev/null 2>&1
