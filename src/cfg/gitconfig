@@ -21,7 +21,7 @@
   br = branch -v
   ci = commit -v
   cl = clone -v
-  co = checkout -v
+  co = checkout
   fe = fetch -v
   me = merge -v
   st = status

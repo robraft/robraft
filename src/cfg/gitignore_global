@@ -13,6 +13,8 @@
 *.pyo
 *.war
 *.ear
+node_modules
+*.pdf
 
 # Packages #
 ############

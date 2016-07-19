@@ -127,7 +127,8 @@ function is_node_project {
 }
 
 function get_node_version {
-  nvm current
+  [[ $(type -t nvm) ]] && printf "|node %s" "$(nvm current)"
+  [[ $(type -t n  ) ]] && printf "|node %s/%s" $(node -v) $(npm -v)
 }
 
 # Detect whether the current directory is a git repository.
@@ -142,32 +143,14 @@ function set_git_branch {
 
   # Set color based on clean/staged/dirty.
   if [[ ${git_status} =~ "working directory clean" ]]; then
-    state=$GRFG
-		cleandirty=""
+		cleandirty="$GRFG"
+  elif [[ ${git_status} =~ "Untracked files" || ${git_status} =~ "Changes not staged" ]]; then
+		cleandirty="$RDFGUL"
   elif [[ ${git_status} =~ "Changes to be committed" ]]; then
-    state=$GRUL
-		cleandirty="$RDFG$SYMDELTA$RESET"
+		cleandirty="$GNFGUL"
   else
-    state=$GRUL
-		cleandirty="$RDFG$SYMDELTA$RESET"
+		cleandirty="$RDFG"
   fi
-
-  # Set arrow icon based on status against remote.
-  remote_pattern="# Your branch is (.*) of"
-  if [[ ${git_status} =~ ${remote_pattern} ]]; then
-    if [[ ${BASH_REMATCH[1]} == "ahead" ]]; then
-      remote="↑"
-    else
-      remote="↓"
-    fi
-  else
-    remote=""
-  fi
-  diverge_pattern="# Your branch and (.*) have diverged"
-  if [[ ${git_status} =~ ${diverge_pattern} ]]; then
-    remote="↕"
-  fi
-	remote="$RDFG$remote$RESET"
 
   # Get the name of the branch.
   branch_pattern="^On branch ([^${IFS}]*)"
@@ -180,7 +163,7 @@ function set_git_branch {
 	fi
 
   # Set the final branch string.
-  BRANCH="${cleandirty}${remote} ${state}(git:${branch})$RESET"
+  BRANCH="${cleandirty}(#${branch})$RESET"
 }
 
 # Return the prompt symbol to use, colorized based on the return value of the
@@ -208,7 +191,7 @@ function set_bash_prompt () {
 
   NODEVER=''
   if is_node_project ; then
-    NODEVER="/node $(get_node_version)"
+    NODEVER="$(get_node_version)"
   fi
 
   # Fill spaces between the left and right halves
@@ -222,7 +205,7 @@ function set_bash_prompt () {
   fill=${fill:0:$fillsize}
 
   # Set the bash prompt variable.
-  PS1="\n$CYFG\t $GNFG\u@\h$RESET:$YLFG\w $fill${BRANCH}\n\
+  PS1="\n$CYFG\t $GNFG\u@\h$RESET:$YLFG\w${BRANCH}\n\
 $YLFG[$THIS_SHELL $THIS_VERSION${NODEVER}] ${RESET}${PROMPT_SYMBOL} "
 }
 

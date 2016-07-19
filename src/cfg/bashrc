@@ -144,9 +144,10 @@ spinhosts() {
   echo -e '\n*done*'
 }
 
-#vim: set ts=2 sts=2 sw=2 sws=2 noexpandtab:
-
 export NVM_DIR="/Users/braftery/.nvm"
-[[ -s "$NVM_DIR/nvm.sh" ]]        && . "$NVM_DIR/nvm.sh"  # This loads nvm
-[[ -r $NVM_DIR/bash_completion ]] && . $NVM_DIR/bash_completion
+[[ -s "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+[[ -s "$NVM_DIR/nvm.sh" && -r $NVM_DIR/bash_completion ]] && . $NVM_DIR/bash_completion
+
+
+#vim: set ts=2 sts=2 sw=2 sws=2 noexpandtab:
 
