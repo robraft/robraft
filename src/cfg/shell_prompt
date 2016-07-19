@@ -143,7 +143,7 @@ function set_git_branch {
 
   # Set color based on clean/staged/dirty.
   if [[ ${git_status} =~ "working directory clean" ]]; then
-		cleandirty="$GRFG"
+		cleandirty="$GRFGUL"
   elif [[ ${git_status} =~ "Untracked files" || ${git_status} =~ "Changes not staged" ]]; then
 		cleandirty="$RDFGUL"
   elif [[ ${git_status} =~ "Changes to be committed" ]]; then
