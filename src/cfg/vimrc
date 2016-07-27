@@ -42,6 +42,10 @@ Plugin 'tpope/vim-commentary'
 """ Plugin 'tpope/vim-speeddating'
 Plugin 'tpope/vim-unimpaired'
 
+""" EditorConfig plugin
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Plugin 'editorconfig/editorconfig-vim'
+
 """ MATCHing braces & INDENT Visual Guides
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 Plugin 'tmhedberg/matchit'
