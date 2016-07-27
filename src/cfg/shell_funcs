@@ -42,6 +42,13 @@ function wintitle {
    echo -e "\e]0;${1}\a"
 }
 
+
+[[ $( type ll ) ]] && unalias ll
+function ll() {
+   CLICOLOR_FORCE=Y ls -lFG $* | sed -Ee 's/^-/x/' | sort --key=1.1,1.2 --key=9 | sed -Ee 's/^x/-/'
+}
+
+
 #///////////////////////////////////////////////////////////////////////////
 #  SPIN-UP A NEW WINDOW WITH SSH IN IT
 #///////////////////////////////////////////////////////////////////////////

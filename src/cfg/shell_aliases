@@ -41,8 +41,8 @@ ls --group-directories-first >/dev/null 2>&1 && LSGRPDIR_PARM_="--group-director
 ls --group-directories-first >/dev/null 2>&1 || LSGRPDIR_PARM_=" "
 
 alias       ls="ls -F $LS_COLOR_PARM_ $LSGRPDIR_PARM_"
-alias       ll="ls -lF $LS_COLOR_PARM_ $LSGRPDIR_PARM_"
 alias       lo="ls -oF $LS_COLOR_PARM_ $LSGRPDIR_PARM_"
+[[ $( type ll ) ]] || alias ll="ls -lF $LS_COLOR_PARM_ $LSGRPDIR_PARM_"
 
 # ///////////////////////////////////////////////////////////////////////////
 # ////  PROBE CHMOD CMD TO DETERMINE IF VERBOSE IS AN ACCEPTABLE PARM
