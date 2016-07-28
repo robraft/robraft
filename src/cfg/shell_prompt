@@ -206,8 +206,10 @@ function set_bash_prompt () {
   fill=`printf ' %.0s' {1..300}` # 300 spaces
   fill=${fill:0:$fillsize}
 
+   WINTITLE='\[\e]0;\h:\w\a\]'
+
   # Set the bash prompt variable.
-  PS1="\n$CYFG\t $GNFG\u@\h$RESET:$YLFG\w${BRANCH}\n\
+  PS1="\n${WINTITLE}$CYFG\t $GNFG\u@\h$RESET:$YLFG\w${BRANCH}\n\
 $YLFG[$THIS_SHELL $THIS_VERSION${NODEVER}] ${RESET}${PROMPT_SYMBOL} "
 }
 
@@ -215,7 +217,7 @@ $YLFG[$THIS_SHELL $THIS_VERSION${NODEVER}] ${RESET}${PROMPT_SYMBOL} "
 PROMPT_COMMAND=set_bash_prompt
 # ///////////////////////////////////////////////////////////////////////////
 
-export PS1 LS_COLORS
+export PS1
 
 # vim: set filetype=sh sws=2 sw=2 sts=2 ts=2 expandtab :
 

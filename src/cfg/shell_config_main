@@ -98,4 +98,11 @@ safesource $dname/shell_aliases
 
 safesource $dname/shell_prompt
 
+### pick one of the following: the alias or the function
+## alias ll="ls -lF $LS_COLOR_PARM_ $LSGRPDIR_PARM_"
+function ll() {
+  ## mac os x -- sort dir's first, regular files last, and strip the 'total' line
+  CLICOLOR_FORCE=Y 'ls' -lFG $* | sed -Ee 's/^-/x/' -e '/^total/d' | sort --key=1.1,1.2 --key=9 | sed -Ee 's/^x/-/'
+}
+
 # vim: set filetype=sh sw=2 sts=2 ts=2 expandtab :
