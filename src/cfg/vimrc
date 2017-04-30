@@ -58,7 +58,7 @@ Plugin 'Align'
 """ AUTO-COMPLETION Voodoo
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ Plugin 'AutoComplPop', {'pinned': 1}
-Plugin 'AutoComplPop'
+"" Plugin 'AutoComplPop'
 
 """ SYNTASTIC -- syntax checking for the masses
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""

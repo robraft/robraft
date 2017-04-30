@@ -9,6 +9,7 @@
 
 [core]
   editor = vim
+	excludesfile = /Users/braftery/.gitignore_global
 
 [color]
   ui = auto

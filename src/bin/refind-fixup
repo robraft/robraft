@@ -1,0 +1,13 @@
+#!/bin/bash
+sudo mkdir /Volumes/esp
+read -p "Press [Enter] key to continue..."
+
+sudo mount -t msdos /dev/disk0s1 /Volumes/esp
+read -p "Press [Enter] key to continue..."
+
+sudo bless --mount /Volumes/esp --setBoot \
+--file /Volumes/esp/EFI/BOOT/bootx64.efi --verbose
+read -p "Press [Enter] key to continue..."
+
+sudo umount /Volumes/esp
+read -p "Press [Enter] key to continue..."

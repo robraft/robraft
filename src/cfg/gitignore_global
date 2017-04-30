@@ -2,10 +2,16 @@
 
 # Compiled source #
 ###################
+*.app
 *.com
 *.class
 *.dll
+*.sys
 *.exe
+*.mnx
+*.vcf
+*.vct
+*.vcx
 *.o
 *.obj
 *.so
@@ -23,6 +29,9 @@ node_modules
 *.7z
 *.dmg
 *.iso
+*.vhd
+*.vhdx
+*.vdi
 *.jar
 *.rar
 *.tar
@@ -34,8 +43,11 @@ node_modules
 # Editing cruft #
 #################
 *.bak
+*.bkp
 *.swp
 *~
+tmp
+temp
 
 # Logs and databases #
 ######################
@@ -43,6 +55,13 @@ node_modules
 ## *.sql
 *.sqlite
 *.db
+*.dbf
+*.cdx
+*.fpt
+*.tbk
+*.mdb
+*.ldb
+*.xls
 
 # OS generated files #
 ######################
@@ -54,6 +73,16 @@ node_modules
 ehthumbs.db
 Thumbs.db
 Icon?
+*.fts
+*.hlp
+*.aw
+*.cnt
+*.ftg
+*.fts
+*.tlb
+*.gid
+*.mda
+*.mdw
 
 # IDE files #
 #############
