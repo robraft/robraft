@@ -55,9 +55,9 @@ temp
 ## *.sql
 *.sqlite
 *.db
-*.dbf
-*.cdx
-*.fpt
+## *.dbf
+## *.cdx
+## *.fpt
 *.tbk
 *.mdb
 *.ldb

@@ -142,16 +142,17 @@ function set_git_branch {
   git_status="$(git status 2> /dev/null)"
 
   # Set color based on clean/staged/dirty.
+  # untracked -> staged -> committed -> origin sync'ed
   if [[ ${git_status} =~ "Untracked files" || ${git_status} =~ "Changes not staged" ]]; then
 		cleandirty="$RDFGUL"
   elif [[ ${git_status} =~ "Changes to be committed" ]]; then
+		cleandirty="$MGFGUL"
+  elif [[ ${git_status} =~ "working tree clean" && ${git_status} =~ "branch is ahead" ]]; then
 		cleandirty="$GNFGUL"
-  elif [[ ${git_status} =~ "branch is up" ]]; then
+  elif [[ ${git_status} =~ "branch is up" && ${git_status} =~ "nothing to commit" ]]; then
 		cleandirty="$GRFG"
-  elif [[ ${git_status} =~ "working directory clean" ]]; then
-		cleandirty="$GRFGUL"
   else
-		cleandirty="$RDFG"
+		cleandirty="$GNFG"
   fi
 
   # Get the name of the branch.
