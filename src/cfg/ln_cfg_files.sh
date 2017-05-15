@@ -1,8 +1,8 @@
 # make soft links from $HOME to files in cfg dir
 cfg=gh/rr/src/cfg
 cd $HOME/$cfg
-ln -sf shell_config_main bash_profile
-ln -sf shell_config_main profile
+ln -sf shell_config bash_profile
+ln -sf shell_config profile
 
 cd $HOME
 for fname in $cfg/* ; do
