@@ -1,0 +1,61 @@
+# file: shell_aliases
+
+# ///////////////////////////////////////////////////////////////////////////
+# ////  VANILLA ALIASES
+# ///////////////////////////////////////////////////////////////////////////
+alias      ..="cd .."
+alias     ...="cd ../.."
+alias    apps='ps axxx | grep appserver_cm[1-9] | awk "/\/bin\/sh/ {split(\$7,fld,/_/); print fld[1]}" | sort | uniq'
+alias     cls="clear"
+alias      gv="/usr/local/bin/gvim"
+alias       h="history"
+alias       j="jobs"
+alias      l.="ls -d .*"
+alias      rr="cd ~/gh/rr"
+alias     npm="node --max-old-space-size=4000 $(which npm)"
+alias  npmupd='npm install -g npm && npm update -g'
+alias  nvmupd='nvm install node --reinstall-packages-from=node && npmupd'
+alias    proj="cd ~/proj"
+
+alias      st='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
+alias     sub='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
+alias    subl='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
+
+# ///////////////////////////////////////////////////////////////////////////
+# ////  CONDITIONAL ALIASES
+# ///////////////////////////////////////////////////////////////////////////
+[[ -d /mnt/c ]] && alias outlook="cmd /c start '' 'C:\Program Files (x86)/Microsoft Office\Office14\OUTLOOK.EXE'"
+[[ -f ~/.ssh/proxyon ]]  && alias proxyon="echo please use proxyon2"
+[[ -f ~/.ssh/proxyon2 ]]  && alias proxyon2=". ~/.ssh/proxyon2"
+[[ -f ~/.ssh/proxyoff ]] && alias proxyoff=". ~/.ssh/proxyoff"
+[[ -f /usr/bin/mc ]]     && alias mc='/usr/bin/mc -P ~/.mc.dir  "$PWD" ~ && export MCDIR_="$(< ~/.mc.dir )" && cd "$MCDIR_" && rm ~/.mc.dir > /dev/null'
+[[ -f /usr/share/mc/bin/mc-wrapper.sh ]] && alias mc='. /usr/share/mc/bin/mc-wrapper.sh -a'
+
+# ///////////////////////////////////////////////////////////////////////////
+# ////  PROBE LS CMD TO DETERMINE ACCEPTABLE PARMS
+# ///////////////////////////////////////////////////////////////////////////
+ls --color=auto >/dev/null 2>&1    && LS_COLOR_PARM_="--color=auto"
+ls --color=auto >/dev/null  2>&1   || LS_COLOR_PARM_="-G"
+ls $LS_COLOR_PARM_ >/dev/null 2>&1 || LS_COLOR_PARM_=
+ls --group-directories-first >/dev/null 2>&1 && LSGRPDIR_PARM_="--group-directories-first"
+ls --group-directories-first >/dev/null 2>&1 || LSGRPDIR_PARM_=" "
+
+alias       ls="ls -F $LS_COLOR_PARM_ $LSGRPDIR_PARM_"
+alias       lo="ls -oF $LS_COLOR_PARM_ $LSGRPDIR_PARM_"
+
+# ///////////////////////////////////////////////////////////////////////////
+# ////  PROBE CHMOD CMD TO DETERMINE IF VERBOSE IS AN ACCEPTABLE PARM
+# ///////////////////////////////////////////////////////////////////////////
+VERBOSE_=
+VERBOSERM_=
+touch scratch.scratch
+chmod -v 777 scratch.scratch > /dev/null 2>&1 && VERBOSE_=-v
+rm -e scratch.scratch > /dev/null 2>&1 && VERBOSERM_=-e
+rm scratch.scratch > /dev/null 2>&1
+alias chgrp="chgrp $VERBOSE_"
+alias chmod="chmod $VERBOSE_"
+alias    cp="cp $VERBOSE_"
+alias    mv="mv $VERBOSE_"
+alias    rm="rm $VERBOSE_ $VERBOSERM_"
+
+# vim: set filetype=sh sws=2 sw=2 sts=2 ts=2 noexpandtab :

@@ -1,0 +1,108 @@
+# file: shell_config_main
+
+### to change your shell
+### note: make sure your shell is in /etc/shells
+## chsh -s /usr/local/bin/bash -u braftery braftery
+
+## needed by bash to enable extended glob patterns ...
+## may not be supported by other shells so route all output to the bitbucket
+shopt -s extglob > /dev/null 2>&1
+
+## suss-out the shell being used and set THIS_SHELL accordingly
+## it can help-out knowing the shell ...
+## (fyi: bash needs extglob enabled for the next line to work)
+SHELL_PGM_=${SHELL##**/}
+THIS_SHELL="unknown"
+case $SHELL_PGM_ in
+   bash)   THIS_SHELL="bash" ;;
+   *ksh)   THIS_SHELL="ksh" ; THIS_VERSION="88" ;;
+   *ksh93) THIS_SHELL="ksh" ; THIS_VERSION="93" ;;
+   *ksh*)  THIS_SHELL="ksh" ; THIS_VERSION="xx" ;;
+   zsh)    THIS_SHELL="zsh" ;;
+   *)      THIS_SHELL="-huh?: ${SHELL_PGM_}-" ;;
+esac
+unset SHELL_PGM_
+
+## dbl-check.. just in case...
+[[ "${BASH_VERSION}x" != "x" ]] && { THIS_SHELL="bash" ; THIS_VERSION=${BASH_VERSION%-release}; }
+[[ "${ZSH_VERSION}x"  != "x" ]] && { THIS_SHELL="zsh"  ; THIS_VERSION=${ZSH_VERSION}; }
+[[ "${COMPUTERNAME}x" != "x" ]] && { IS_LOCAL="1" ; IS_REMOTE="0" ; }
+[[ "${COMPUTERNAME}x" == "x" ]] && { IS_LOCAL="0" ; IS_REMOTE="1" ; }
+
+## what environment are we executing in
+case $(hostname) in
+   *prd*) IS_PRD="1" ; IS_TST="0" ; IS_DEV="0" ; THIS_ENV="PRD" ;;
+   *tst*) IS_PRD="0" ; IS_TST="1" ; IS_DEV="0" ; THIS_ENV="TST" ;;
+   *dev*) IS_PRD="0" ; IS_TST="0" ; IS_DEV="1" ; THIS_ENV="DEV" ;;
+   *)     IS_PRD="0" ; IS_TST="0" ; IS_DEV="0" ; THIS_ENV="UNK" ;;
+esac
+
+export THIS_SHELL THIS_VERSION IS_LOCAL IS_REMOTE IS_PRD IS_TST IS_DEV THIS_ENV
+
+
+## //////////////////////////////////////////////////////////////////////////
+## helper func to log output
+function log {
+   echo " [shell: ${THIS_SHELL} v${THIS_VERSION}] $*"
+}
+function safesource {
+    if [ -e $1 -a -r $1 ] ; then
+        . $1
+        log "sourcing $1 ... done"
+    else
+        log "sourcing $1 ... CAN'T!: no file or can't read it"
+    fi
+}
+## //////////////////////////////////////////////////////////////////////////
+
+case $THIS_SHELL in
+   bash) log "running ${BASH_SOURCE##**/} ..." ;;
+   ksh)  log "running ~/.profile ..." ;;
+   zsh)  log "running ${0/${HOME}/~} ..." ;;
+   *)    log "running $0; update me (.bob_rc)" ;;
+esac
+
+## various ...
+umask 0022
+
+## following for bash ...
+if [[ $THIS_SHELL == "bash" ]]
+then
+   set +o posix
+   set -o vi
+   ## the next line is likely to fail so direct output to the bitbucket and go on
+   shopt -s autocd checkjobs dirspell globstar > /dev/null 2>&1
+   shopt -s cdspell checkhash checkwinsize cmdhist
+   shopt -s extglob extquote interactive_comments
+   shopt -s no_empty_cmd_completion promptvars
+fi
+
+#
+if [[ -f ~/.bashrc ]] ; then
+        . ~/.bashrc
+fi
+export PATH="/usr/local/sbin:$PATH"
+
+### overdesigned POS ###  TODO: simplify
+
+### get actual dir that 'shell_config_main' is "in" to find rest of the files
+fname=`readlink "${BASH_SOURCE[0]}"`
+dname=`dirname $fname`
+
+# source aliases and functions
+safesource $dname/shell_funcs
+
+safesource $dname/shell_env_vars
+
+safesource $dname/shell_aliases
+
+safesource $dname/shell_prompt
+
+### pick one of the following: the alias or the function
+## alias ll="ls -lF $LS_COLOR_PARM_ $LSGRPDIR_PARM_"
+function ll() {
+  ## mac os x -- sort dir's first, regular files last, and strip the 'total' line
+  CLICOLOR_FORCE=Y 'ls' -lFG $* | sed -Ee 's/^-/x/' -e '/^total/d' | sort --key=1.1,1.2 --key=9 | sed -Ee 's/^x/-/'
+}
+
+# vim: set filetype=sh sw=2 sts=2 ts=2 expandtab :

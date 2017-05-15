@@ -1,0 +1,132 @@
+# file: shell_funcs
+
+#///////////////////////////////////////////////////////////////////////////
+#  UTILITY FUNC'S
+#///////////////////////////////////////////////////////////////////////////
+
+## utility helpers
+#----------------
+function pathmunge {
+   if ! echo $PATH | /usr/bin/egrep -q "(^|:)$1($|:)" ; then
+      if [ "$2" = "after" ] ; then
+         PATH=$PATH:$1
+      else
+         PATH=$1:$PATH
+      fi
+   fi
+}
+
+function safepathmunge {
+   if [ -d $1 ] ; then
+      if ! echo $PATH | /usr/bin/egrep -q "(^|:)$1($|:)" ; then
+         if [ "$2" = "after" ] ; then
+            PATH=$PATH:$1
+         else
+            PATH=$1:$PATH
+         fi
+         log "Added '$1' to PATH"
+      else
+         log "'$1' is already in the PATH"
+      fi
+   else
+      log "Dir '$1' doesn't exist-- skipping adding it to the PATH"
+   fi
+}
+
+function userhasgroup {
+    id | LC_ALL=C grep "$1" > /dev/null
+    return
+}
+
+function wintitle {
+   echo -e "\e]0;${1}\a"
+}
+
+#///////////////////////////////////////////////////////////////////////////
+#  SPIN-UP A NEW WINDOW WITH SSH IN IT
+#///////////////////////////////////////////////////////////////////////////
+
+# xssh....
+#----------------
+function xssh {
+   nohup xterm -fg grey -bg black -e ssh $1 &
+}
+
+#///////////////////////////////////////////////////////////////////////////
+#  START & STOP SSH-AGENT
+#///////////////////////////////////////////////////////////////////////////
+ls ~/.ssh/id_* > /dev/null 2>&1   ## test if keys are present in ~/.ssh
+if [[ $? == 0 ]] ; then
+   function ssh-agent-stop {
+      local tmpfile="${HOME}/tmp/sshagent_wrapper.sh"
+      if [ -f ${tmpfile} ] ; then
+         rm ${tmpfile}
+      fi
+      kill $(ps | awk -- '/ssh-agent/{print $1;}') &> /dev/null
+      rm -r /tmp/ssh-* &> /dev/null
+   }
+
+   function ssh-agent-start {
+      local ssh_keyfiles="$(ls ~/.ssh/id_* | grep -v \.pub)"  ## private keys
+      # if there is an ssh-agent running, and it is healthy...
+      # add the keys and be done with it...
+      if [[ "${SSH_AGENT_PID}" != "" ]] &&
+         [[ "$(ps -p ${SSH_AGENT_PID} | grep ${SSH_AGENT_PID} | wc -l)" == "1" ]]
+      then
+         echo ' [ssh-agent-start] ssh-agent is running...'
+         echo " [ssh-agent-start] ssh-agent is PID ${SSH_AGENT_PID}"
+         if [[ -e "$SSH_AUTH_SOCK" ]] ;
+         then
+            echo ' [ssh-agent-start] ssh-agent appears reachable...'
+            if [[ "$(ssh-add -L | grep "no identities" | wc -l)" == "1" ]] ;
+            then
+               echo ' [ssh-agent-start] ssh-agent has no keys - adding key(s)...'
+               ssh-add $ssh_keyfiles
+            else
+               echo ' [ssh-agent-start] ssh-agent has keys - move along, there is nothing to do.'
+            fi
+            return
+         else
+            echo ' [ssh-agent-start] ssh-agent appears un-reachable - restarting...'
+            # ssh-agent is unreachable -- kill it, zap the env var's and start over...
+            kill $(ps | awk -- '/ssh-agent/{print $1;}') &> /dev/null
+            rm -r /tmp/ssh-* &> /dev/null
+            export -n SSH_AGENT_PID=
+            export -n SSH_AUTH_SOCK=
+            ssh-agent > ${tmpfile}
+            eval $(< ${tmpfile})
+            echo " [ssh-agent-start] ssh-agent is PID ${SSH_AGENT_PID}"
+            echo ' [ssh-agent-start] ssh-agent has no keys - adding key(s)...'
+            ssh-add $ssh_keyfiles
+            return
+         fi
+      fi
+     # ... otherwise foof-around looking for the wrapper thingey
+      local tmpfile="${HOME}/tmp/sshagent_wrapper.sh"
+      if [[ "${SSH_AGENT_PID}" == "" ]] ||
+         [[ "$(ps -p ${SSH_AGENT_PID} | grep ${SSH_AGENT_PID} | wc -l)" != "1" ]] ;
+      then
+         # either there is no env var for the ssh-agent pid...
+         # ... or the env var is stale (for some reason)...
+         if [[ -f ${tmpfile} ]] ;
+         then
+            # but a 'wrapper tmpfile' exists...
+            # ... so run it, then see if the ssh-agent is running...
+            eval $(< ${tmpfile})
+         fi
+      fi
+      # an env var exists for the ssh-agent pid...
+      if [[ "${SSH_AGENT_PID}" == "" ]] ||
+         [[ "$(ps -p ${SSH_AGENT_PID} | grep ${SSH_AGENT_PID} | wc -l)" != "1" ]] ;
+      then
+         # there is no process with that pid;
+         # ... the ssh-agent doesn't seem to be running...
+         # ... so start the ssh-agent and load the keys...
+         ssh-agent > ${tmpfile}
+         eval $(< ${tmpfile})
+         ssh-add $ssh_keyfiles
+      fi
+   }
+fi
+
+# vim: set filetype=sh sw=3 sts=3 ts=3 expandtab :
