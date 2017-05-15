@@ -38,3 +38,18 @@
 
 [remote "origin"]
         fetch = +refs/heads/*:refs/remotes/origin/*
+[help]
+	autoCorrect = -1
+[log]
+	abbrevCommit = true
+	decorate = short
+[apply]
+	ignoreWhitespace = change
+[rerere]
+	enabled = true
+	autoUpdate = true
+[am]
+	threeWay = true
+[pull]
+	ff = only
+	default = current
