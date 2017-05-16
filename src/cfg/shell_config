@@ -1,4 +1,4 @@
-# file: shell_config_main
+# file: shell_config
 
 ### to change your shell
 ### note: make sure your shell is in /etc/shells
@@ -39,9 +39,8 @@ esac
 
 export THIS_SHELL THIS_VERSION IS_LOCAL IS_REMOTE IS_PRD IS_TST IS_DEV THIS_ENV
 
+###   LOG OUTPUT
 
-## //////////////////////////////////////////////////////////////////////////
-## helper func to log output
 function log {
    echo " [shell: ${THIS_SHELL} v${THIS_VERSION}] $*"
 }
@@ -53,7 +52,6 @@ function safesource {
         log "sourcing $1 ... CAN'T!: no file or can't read it"
     fi
 }
-## //////////////////////////////////////////////////////////////////////////
 
 case $THIS_SHELL in
    bash) log "running ${BASH_SOURCE##**/} ..." ;;
@@ -83,20 +81,123 @@ if [[ -f ~/.bashrc ]] ; then
 fi
 export PATH="/usr/local/sbin:$PATH"
 
-### overdesigned POS ###  TODO: simplify
+### get actual dir that this is "in" to find rest of the files
+##### fname=`readlink "${BASH_SOURCE[0]}"`
+##### dname=`dirname $fname`
 
-### get actual dir that 'shell_config_main' is "in" to find rest of the files
-fname=`readlink "${BASH_SOURCE[0]}"`
-dname=`dirname $fname`
+###    UTILITY FUNCTIONS
 
-# source aliases and functions
-safesource $dname/shell_funcs
+function pathmunge {
+   if ! echo $PATH | /usr/bin/egrep -q "(^|:)$1($|:)" ; then
+      if [ "$2" = "after" ] ; then
+         PATH=$PATH:$1
+      else
+         PATH=$1:$PATH
+      fi
+   fi
+}
 
-safesource $dname/shell_env_vars
+function safepathmunge {
+   if [ -d $1 ] ; then
+      if ! echo $PATH | /usr/bin/egrep -q "(^|:)$1($|:)" ; then
+         if [ "$2" = "after" ] ; then
+            PATH=$PATH:$1
+         else
+            PATH=$1:$PATH
+         fi
+         log "Added '$1' to PATH"
+      else
+         log "'$1' is already in the PATH"
+      fi
+   else
+      log "Dir '$1' doesn't exist-- skipping adding it to the PATH"
+   fi
+}
 
-safesource $dname/shell_aliases
+function userhasgroup {
+    id | LC_ALL=C grep "$1" > /dev/null
+    return
+}
 
-safesource $dname/shell_prompt
+function wintitle {
+   echo -e "\e]0;${1}\a"
+}
+
+###  FUNC: START & STOP SSH-AGENT
+
+ls ~/.ssh/id_* > /dev/null 2>&1   ## test if keys are present in ~/.ssh
+if [[ $? == 0 ]] ; then
+   function ssh-agent-stop {
+      local tmpfile="${HOME}/tmp/sshagent_wrapper.sh"
+      if [ -f ${tmpfile} ] ; then
+         rm ${tmpfile}
+      fi
+      kill $(ps | awk -- '/ssh-agent/{print $1;}') &> /dev/null
+      rm -r /tmp/ssh-* &> /dev/null
+   }
+
+   function ssh-agent-start {
+      local ssh_keyfiles="$(ls ~/.ssh/id_* | grep -v \.pub)"  ## private keys
+      # if there is an ssh-agent running, and it is healthy...
+      # add the keys and be done with it...
+      if [[ "${SSH_AGENT_PID}" != "" ]] &&
+         [[ "$(ps -p ${SSH_AGENT_PID} | grep ${SSH_AGENT_PID} | wc -l)" == "1" ]]
+      then
+         echo ' [ssh-agent-start] ssh-agent is running...'
+         echo " [ssh-agent-start] ssh-agent is PID ${SSH_AGENT_PID}"
+         if [[ -e "$SSH_AUTH_SOCK" ]] ;
+         then
+            echo ' [ssh-agent-start] ssh-agent appears reachable...'
+            if [[ "$(ssh-add -L | grep "no identities" | wc -l)" == "1" ]] ;
+            then
+               echo ' [ssh-agent-start] ssh-agent has no keys - adding key(s)...'
+               ssh-add $ssh_keyfiles
+            else
+               echo ' [ssh-agent-start] ssh-agent has keys - move along, there is nothing to do.'
+            fi
+            return
+         else
+            echo ' [ssh-agent-start] ssh-agent appears un-reachable - restarting...'
+            # ssh-agent is unreachable -- kill it, zap the env var's and start over...
+            kill $(ps | awk -- '/ssh-agent/{print $1;}') &> /dev/null
+            rm -r /tmp/ssh-* &> /dev/null
+            export -n SSH_AGENT_PID=
+            export -n SSH_AUTH_SOCK=
+            ssh-agent > ${tmpfile}
+            eval $(< ${tmpfile})
+            echo " [ssh-agent-start] ssh-agent is PID ${SSH_AGENT_PID}"
+            echo ' [ssh-agent-start] ssh-agent has no keys - adding key(s)...'
+            ssh-add $ssh_keyfiles
+            return
+         fi
+      fi
+     # ... otherwise foof-around looking for the wrapper thingey
+      local tmpfile="${HOME}/tmp/sshagent_wrapper.sh"
+      if [[ "${SSH_AGENT_PID}" == "" ]] ||
+         [[ "$(ps -p ${SSH_AGENT_PID} | grep ${SSH_AGENT_PID} | wc -l)" != "1" ]] ;
+      then
+         # either there is no env var for the ssh-agent pid...
+         # ... or the env var is stale (for some reason)...
+         if [[ -f ${tmpfile} ]] ;
+         then
+            # but a 'wrapper tmpfile' exists...
+            # ... so run it, then see if the ssh-agent is running...
+            eval $(< ${tmpfile})
+         fi
+      fi
+      # an env var exists for the ssh-agent pid...
+      if [[ "${SSH_AGENT_PID}" == "" ]] ||
+         [[ "$(ps -p ${SSH_AGENT_PID} | grep ${SSH_AGENT_PID} | wc -l)" != "1" ]] ;
+      then
+         # there is no process with that pid;
+         # ... the ssh-agent doesn't seem to be running...
+         # ... so start the ssh-agent and load the keys...
+         ssh-agent > ${tmpfile}
+         eval $(< ${tmpfile})
+         ssh-add $ssh_keyfiles
+      fi
+   }
+fi
 
 ### pick one of the following: the alias or the function
 ## alias ll="ls -lF $LS_COLOR_PARM_ $LSGRPDIR_PARM_"
@@ -104,5 +205,293 @@ function ll() {
   ## mac os x -- sort dir's first, regular files last, and strip the 'total' line
   CLICOLOR_FORCE=Y 'ls' -lFG $* | sed -Ee 's/^-/x/' -e '/^total/d' | sort --key=1.1,1.2 --key=9 | sed -Ee 's/^x/-/'
 }
+
+###    ENVIRONMENT VARS
+
+## default 'ls' cmd colors make dir's very hard to read... so fiddle with it
+LS_COLORS='no=00:fi=00:di=00;35:ln=00;36:pi=40;33:so=00;35:bd=40;33;01:cd=40;33;01:or=01;05;37;41:mi=01;05;37;41:ex=00;32:*.cmd=00;32:*.exe=00;32:*.com=00;32:*.btm=00;32:*.bat=00;32:*.sh=00;32:*.csh=00;32:*.tar=00;31:*.tgz=00;31:*.arj=00;31:*.taz=00;31:*.lzh=00;31:*.zip=00;31:*.z=00;31:*.Z=00;31:*.gz=00;31:*.bz2=00;31:*.bz=00;31:*.tz=00;31:*.rpm=00;31:*.cpio=00;31:*.jpg=00;35:*.gif=00;35:*.bmp=00;35:*.xbm=00;35:*.xpm=00;35:*.png=00;35:*.tif=00;35:'
+
+LSCOLORS="gxfxcxdxbxegedabagacad"
+
+export LS_COLORS LSCOLORS
+
+export CDPATH='.:~:~/gh/'
+
+###     VANILLA ALIASES
+
+alias      ..="cd .."
+alias     ...="cd ../.."
+alias    apps='ps axxx | grep appserver_cm[1-9] | awk "/\/bin\/sh/ {split(\$7,fld,/_/); print fld[1]}" | sort | uniq'
+alias     cls="clear"
+alias      gv="/usr/local/bin/gvim"
+alias       h="history"
+alias       j="jobs"
+alias      l.="ls -d .*"
+alias      rr="cd ~/gh/rr"
+alias     npm="node --max-old-space-size=4000 $(which npm)"
+alias  npmupd='npm install -g npm && npm update -g'
+alias  nvmupd='nvm install node --reinstall-packages-from=node && npmupd'
+alias    proj="cd ~/proj"
+
+alias      st='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
+alias     sub='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
+alias    subl='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
+
+###     CONDITIONAL ALIASES
+
+[[ -d /mnt/c ]] && alias outlook="cmd /c start '' 'C:\Program Files (x86)/Microsoft Office\Office14\OUTLOOK.EXE'"
+[[ -f ~/.ssh/proxyon ]]  && alias proxyon="echo please use proxyon2"
+[[ -f ~/.ssh/proxyon2 ]]  && alias proxyon2=". ~/.ssh/proxyon2"
+[[ -f ~/.ssh/proxyoff ]] && alias proxyoff=". ~/.ssh/proxyoff"
+[[ -f /usr/bin/mc ]]     && alias mc='/usr/bin/mc -P ~/.mc.dir  "$PWD" ~ && export MCDIR_="$(< ~/.mc.dir )" && cd "$MCDIR_" && rm ~/.mc.dir > /dev/null'
+[[ -f /usr/share/mc/bin/mc-wrapper.sh ]] && alias mc='. /usr/share/mc/bin/mc-wrapper.sh -a'
+
+###  PROBE LS CMD TO DETERMINE ACCEPTABLE PARMS
+
+ls --color=auto >/dev/null 2>&1    && LS_COLOR_PARM_="--color=auto"
+ls --color=auto >/dev/null  2>&1   || LS_COLOR_PARM_="-G"
+ls $LS_COLOR_PARM_ >/dev/null 2>&1 || LS_COLOR_PARM_=
+ls --group-directories-first >/dev/null 2>&1 && LSGRPDIR_PARM_="--group-directories-first"
+ls --group-directories-first >/dev/null 2>&1 || LSGRPDIR_PARM_=" "
+
+alias       ls="ls -F $LS_COLOR_PARM_ $LSGRPDIR_PARM_"
+alias       lo="ls -oF $LS_COLOR_PARM_ $LSGRPDIR_PARM_"
+
+###   PROBE CHMOD CMD TO DETERMINE IF VERBOSE IS AN ACCEPTABLE PARM
+
+VERBOSE_=
+VERBOSERM_=
+touch scratch.scratch
+chmod -v 777 scratch.scratch > /dev/null 2>&1 && VERBOSE_=-v
+rm -e scratch.scratch > /dev/null 2>&1 && VERBOSERM_=-e
+rm scratch.scratch > /dev/null 2>&1
+alias chgrp="chgrp $VERBOSE_"
+alias chmod="chmod $VERBOSE_"
+alias    cp="cp $VERBOSE_"
+alias    mv="mv $VERBOSE_"
+alias    rm="rm $VERBOSE_ $VERBOSERM_"
+
+###   SHELL PROMPT
+
+# my kinda prompt
+#### for more info see...
+####  * http://en.wikipedia.org/wiki/ANSI_escape_code
+####  * http://tldp.org/HOWTO/Bash-Prompt-HOWTO/
+####  * http://invisible-island.net/xterm/ctlseqs/ctlseqs.html#VT100 Mode
+# export PS1='\[\e]0;\u@\h:\w\a\]\n\[\e[32m\]\t \u@\h:\[\e[33m\]\w\[\e[0m\]\n\$ '
+# export PS1="\[\e]0;\u@${HOSTNAME,,}:\w\a\]\n\[\e[32m\]\t \u@${HOSTNAME,,}:\[\e[33m\]\w\[\e[0m\]\n\$ "
+
+## export CDPATH='.:~:~/MKSprojects/RFS/FCA:~/proj'
+
+## _template='time user(at)host(colon)pwd(newline)(ltbracket)shell version(rtbracket) dollarsign '
+
+safepathmunge ~/bin
+
+case $THIS_SHELL in
+  bash) e="\\e" ; n="\\n" ;;
+  ksh)  e=''  ; n='
+'  ; a='' ;;
+  zsh)  e=''    ; n=''    ;;
+  *)    e="-e-" ; n="-n"  ;;
+esac
+
+ereset='${e}[0m'
+ecolon='${e}[37m'
+eshell='${e}[33m'
+case $THIS_ENV in
+  PRD)
+    eusrnode='${e}[91;40m' ; ## bright/bold red-fg; normal black-bg
+    epwd='${e}[36;40m' ;     ## normal cyan-fg; normal black-bg
+    etime='${e}[32;40m' ;;   ## normal green-fg; normal black-bg
+  TST)
+    eusrnode='${e}[32;40m' ; ## normal green-fg; black-bg
+    epwd='${e}[36;40m' ;     ## normal cyan-fg; normal black-bg
+    etime='${e}[35;40m' ;;   ## normal magenta-fg; normal black-bg
+  DEV)
+    eusrnode='${e}[32;40m' ; ## normal green-fg; black-bg
+    epwd='${e}[35;40m' ;     ## normal magenta-fg; normal black-bg
+    etime='${e}[36;40m' ;;   ## normal cyan-fg; normal black-bg
+  UNK)
+    eusrnode='${e}[32;40m' ; ## normal green-fg; black-bg
+    epwd='${e}[36;40m' ;     ## normal cyan-fg; normal black-bg
+    etime='${e}[35;40m' ;;   ## normal magenta-fg; normal black-bg
+esac
+
+## set local and remote prompts...
+case $THIS_SHELL in
+  bash)
+    ## XS1="\n${eusrnode}`whoami`@`hostname`${ecolon}:${epwd}\\${PWD}${ereset}\n${eshell}[${THIS_SHELL} ${THIS_VERSION}]${ereset} $ "
+    ## PS1=$(eval echo\ \"$XS1\")
+    PS1="\[${e}]0;\u@\h:\w\a\]${n}\[\e[35;40m\]\t\[\e[32;40m\] \u@\h\[\e[37m\]:\[\e[36;40m\]\w\[\e[0m\]${n}\[\e[33m\][${THIS_SHELL} ${THIS_VERSION}]\[\e[0m\] $ "
+
+    if [[ "$IS_REMOTE" == "1" ]] ; then
+      PS1="\[${e}]0;\u@\h:\w\a\]${n}\[${e}[36m\]\t\[${e}[32m\] \u@\h\[${e}[37m\]:\[${e}[33m\]\w\[${e}[0m\]${n}\[${e}[33m\][${THIS_SHELL} ${THIS_VERSION}]\[\e[0m\] $ "
+      if [[ "$THIS_ENV" == "PRD" ]] ; then
+        PS1="\[${e}]0;\u@\h:\w\a\]${n}\[${e}[32m\]\t\[${e}[91m\] \u@\h\[${e}[37m\]:\[${e}[36m\]\w\[${e}[0m\]${n}\[${e}[33m\][${THIS_SHELL} ${THIS_VERSION}]\[\e[0m\] $ "
+      fi
+    fi
+    ;;
+  ksh)
+    case $THIS_VERSION in
+      "88"|"93") PS1="
+${eusrnode}`whoami`@`hostname`${ecolon}:${epwd}\${PWD}${ereset}
+${eshell}[${THIS_SHELL} ${THIS_VERSION}]${ereset} $ " ;;
+    #   "93") PS1="${e}]0;\u@\h:\w\a
+# ${e}[36m\`date +%T\`${e}[32m `whoami`@`hostname`${e}[37m:${e}[35m\${PWD}${e}[0m
+# ${e}[33m[${THIS_SHELL} ${THIS_VERSION}]${e}[0m $ " ;;
+    #   xx) ;;
+    esac ;;
+  zsh) ;; ## already set by .zshrc
+  *) ;; ## some other prompt
+esac
+
+
+# ///////////////////////////////////////////////////////////////////////////
+#  based on https://gist.github.com/skizzybiz/3789296
+#    and then liberally "bobified" to suit my sense of neatness & aesthetics
+# ///////////////////////////////////////////////////////////////////////////
+# (LOCAL CONSTANTS) Define colors
+RESET='\[\033[00m\]'
+
+BKFG='\[\033[0;30m\]'    # black   foreground
+RDFG='\[\033[0;31m\]'    # red     foreground
+GNFG='\[\033[0;32m\]'    # green   foreground
+YLFG='\[\033[0;33m\]'    # yellow  foreground
+BLFG='\[\033[0;34m\]'    # blue    foreground
+MGFG='\[\033[0;35m\]'    # magenta foreground
+CYFG='\[\033[0;36m\]'    # cyan    foreground
+GRFG='\[\033[0;37m\]'    # gray    foreground
+
+BKFGUL='\[\033[4;30m\]'  # black   foreground, underline
+RDFGUL='\[\033[4;31m\]'  # red     foreground, underline
+GNFGUL='\[\033[4;32m\]'  # green   foreground, underline
+YLFGUL='\[\033[4;33m\]'  # yellow  foreground, underline
+BLFGUL='\[\033[4;34m\]'  # blue    foreground, underline
+MGFGUL='\[\033[4;35m\]'  # magenta foreground, underline
+CYFGUL='\[\033[4;36m\]'  # cyan    foreground, underline
+GRFGUL='\[\033[4;37m\]'  # gray    foreground, underline
+
+BKFGBD='\[\033[1;30m\]'  # black   foreground, bright
+RDFGBD='\[\033[1;31m\]'  # red     foreground, bright
+GNFGBD='\[\033[1;32m\]'  # green   foreground, bright
+YLFGBD='\[\033[1;33m\]'  # yellow  foreground, bright
+BLFGBD='\[\033[1;34m\]'  # blue    foreground, bright
+MGFGBD='\[\033[1;35m\]'  # magenta foreground, bright
+CYFGBD='\[\033[1;36m\]'  # cyan    foreground, bright
+GRFGBD='\[\033[1;37m\]'  # gray    foreground, bright
+
+BKBG='\[\033[40m\]'      # black   background
+RDBG='\[\033[41m\]'      # red     background
+GNBG='\[\033[42m\]'      # green   background
+YLBG='\[\033[43m\]'      # yellow  background
+BLBG='\[\033[44m\]'      # blue    background
+MGBG='\[\033[45m\]'      # magenta background
+CYBG='\[\033[46m\]'      # cyan    background
+GRBG='\[\033[47m\]'      # gray    background
+
+# SYMBOLS
+SYMBUG='⍾ '
+SYMDELTA='▲'
+SYMBRANCH='〒'
+SYMALIEN='👽'
+
+function is_node_project {
+  [[ -f ./package.json ]]
+}
+
+function get_node_version {
+  [[ $(type -t nvm) ]] && printf "|node %s" "$(nvm current)"
+  [[ $(type -t n  ) ]] && printf "|node %s/%s" $(node -v) $(npm -v)
+}
+
+# Detect whether the current directory is a git repository.
+function is_git_repository {
+  git branch > /dev/null 2>&1
+}
+
+# Determine the branch/state information for this git repository.
+function set_git_branch {
+  # Capture the output of the "git status" command.
+  git_status="$(git status 2> /dev/null)"
+
+  # Set color based on clean/staged/dirty.
+  # untracked -> staged -> committed -> origin sync'ed
+  if [[ ${git_status} =~ "Untracked files" || ${git_status} =~ "Changes not staged" ]]; then
+		cleandirty="$RDFGUL"
+  elif [[ ${git_status} =~ "Changes to be committed" ]]; then
+		cleandirty="$MGFGUL"
+  elif [[ ${git_status} =~ "working tree clean" && ${git_status} =~ "branch is ahead" ]]; then
+		cleandirty="$GNFGUL"
+  elif [[ ${git_status} =~ "branch is up" && ${git_status} =~ "nothing to commit" ]]; then
+		cleandirty="$GRFG"
+  else
+		cleandirty="$GNFG"
+  fi
+
+  # Get the name of the branch.
+  branch_pattern="^On branch ([^${IFS}]*)"
+  if [[ ${git_status} =~ ${branch_pattern} ]]; then
+    branch=${BASH_REMATCH[1]}
+  fi
+
+	if [[ "$branch" == "" ]] ; then
+		branch="-none-"
+	fi
+
+  # Set the final branch string.
+  BRANCH="${cleandirty}(#${branch})$RESET"
+}
+
+# Return the prompt symbol to use, colorized based on the return value of the
+# previous command.
+function set_prompt_symbol () {
+	## PROMPT_SYMBOL="⌘"
+	PROMPT_SYMBOL="$"
+  if test $1 -ne 0 ; then
+    PROMPT_SYMBOL="$RDFG$PROMPT_SYMBOL$RESET"
+  fi
+}
+
+# Set the full bash prompt.
+function set_bash_prompt () {
+  # echo "set_bash_prompt"
+  # Set the PROMPT_SYMBOL variable. We do this first so we don't lose the
+  # return value of the last command.
+  set_prompt_symbol $?
+
+  # Set the BRANCH variable.
+	BRANCH=''
+  if is_git_repository ; then
+    set_git_branch
+  fi
+
+  NODEVER=''
+  if is_node_project ; then
+    NODEVER="$(get_node_version)"
+  fi
+
+  # Fill spaces between the left and right halves
+  strippedbranch=`echo $BRANCH | sed 's|\\\\\\[[^]]*\\]||g'`
+  ## lefthalf="`whoami`@`hostname -s` `pwd | sed "s|$HOME|~|"` $strippedbranch"
+  ## righthalf=`date '+%a %b %d %T'`
+  lefthalf="`whoami`@`hostname -s` `pwd | sed "s|$HOME|~|"` `date '+%T'`"
+  righthalf=$strippedbranch
+  let fillsize=${COLUMNS}-${#lefthalf}-${#righthalf}-2
+  fill=`printf ' %.0s' {1..300}` # 300 spaces
+  fill=${fill:0:$fillsize}
+
+   WINTITLE='\[\e]0;\h:\w\a\]'
+
+  # Set the bash prompt variable.
+  PS1="\n${WINTITLE}$CYFG\t $GNFG\u@\h$RESET:$YLFG\w${BRANCH}\n\
+$YLFG[$THIS_SHELL $THIS_VERSION${NODEVER}] ${RESET}${PROMPT_SYMBOL} "
+}
+
+# Tell bash to execute this function just before displaying its prompt.
+PROMPT_COMMAND=set_bash_prompt
+
+###
+
+export PS1
 
 # vim: set filetype=sh sw=2 sts=2 ts=2 expandtab :

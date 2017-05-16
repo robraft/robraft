@@ -1,4 +1,4 @@
-# make soft links from $HOME to files in cfg dir
+# make soft links from $HOME to files in cfg dir (upd for shell_config rename)
 cfg=gh/rr/src/cfg
 cd $HOME/$cfg
 ln -sf shell_config bash_profile
