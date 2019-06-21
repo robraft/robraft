@@ -81,6 +81,12 @@ if [[ -f ~/.bashrc ]] ; then
 fi
 export PATH="/usr/local/sbin:$PATH"
 
+for file in /usr/local/etc/bash_completion.d/* ; do
+  echo " ... sourcing: $file"
+  . $file
+done
+
+
 ### get actual dir that this is "in" to find rest of the files
 ##### fname=`readlink "${BASH_SOURCE[0]}"`
 ##### dname=`dirname $fname`
