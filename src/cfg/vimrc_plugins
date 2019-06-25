@@ -1,0 +1,163 @@
+"file: vimrc_plugins, Load Vim Plugins
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" PLUGIN MGMT BY VIM-PLUG
+""" @see https://github.com/junegunn/vim-plug
+""" Keep Plugin commands between plug/end.
+""" use: vim +PlugInstall <cr> to update/install from cmd line
+"""  or just: :PlugInstall <cr> to update/install from inside Vim
+"""  or even: :PlugInstall | :PlugUpdate <cr> to update/install inside Vim
+"""  :PlugInstall   Install plugins
+"""  :PlugUpdate    Install or update plugins
+"""  :PlugClean[!]  Remove unused dir's; bang supresses prompting.
+"""  :PlugUpgrade   Upgrade vim-plug itself
+"""  :PlugStatus    Check the status of plugins
+"""  :PlugDiff      Examine changes from previous and pending changes
+"""  :PlugSnapshot[!] [output path]  Generate scipt to restore current snapshot
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" DEFINE AUTOCMD GROUP:
+""" @see http://rbtnn.hateblo.jp/entry/2014/12/28/010913
+""" ... then all :autocmd vimrc_plugins  to register the
+"""  auto-cmd with the group
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+augroup vimrc_plugins
+  autocmd!
+augroup END
+
+" AUTO-INSTALL VIM-PLUG
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd vimrc_plugins VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" PLUGINS BEGIN
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+silent! call plug#begin('~/.vim/plugged')
+
+" enable-> :help plug-options
+Plug 'junegunn/vim-plug'
+
+" COLOR SCHEMES
+""" @see https://github.com/morhetz/gruvbox
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Plug 'morhetz/gruvbox'          " Retro groove color scheme
+
+" GOD Bless TPOPE !!
+""" @see https://github.com/tpope
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Plug 'tpope/vim-commentary' " comment stuff                  -> :h commentary
+Plug 'tpope/vim-dispatch'   " compiler async                 -> :h dispatch
+Plug 'tpope/vim-eunuch'     " Unix utils                     -> :h eunuch
+Plug 'tpope/vim-fugitive'   " git wrapper                    -> :h fugitive
+Plug 'tpope/vim-repeat'     " repeat actions w/ dot cmd      -> @see web
+Plug 'tpope/vim-surround'   " handle pairs of 'surroundings' -> :h surround
+Plug 'tpope/vim-unimpaired' " just wow                       -> :h unimpaired
+"Plug 'tpope/vim-vinegar'    " NetRW Tweaks                   -> :h vinegar
+
+" Plug 'tpope/vim-abolish'
+" Plug 'tpope/vim-endwise'
+" Plug 'tpope/vim-sensible'
+" Plug 'tpope/vim-speeddating'
+
+Plug 'editorconfig/editorconfig-vim'   " @see EditorConfig.org -> :h editorconfig
+Plug 'nathanaelkane/vim-indent-guides' " display indent levels -> :h indent_guides
+Plug 'mtth/scratch.vim'                " scratch buffer        -> :h scratch
+
+" VIM-DETERMINED
+""" @see https://github.com/tandrewnichols/vim-determined
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Plug 'tandrewnichols/vim-determined'  " vim8 async terminal enhancements
+
+" TODO: @see https://github.com/svermeulen/vim-easyclip
+" Plug 'svermeulen/vim-easyclip'
+
+if exists("g:rr_use_syntastic") && g:rr_use_syntastic
+  " SYNTASTIC -- syntax checking for the masses
+  """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  Plug 'scrooloose/syntastic'
+
+  " VIM Syntax Checking -- gotta have it
+  """ @see https://github.com/Kuniwak/vint
+  """ @see https://google.github.io/styleguide/vimscriptguide.xml
+  """ TO INSTALL: $ pip install --user vim-vint
+  """ User Config: ~/.vintrc.yaml -or- .vintrc.yml  -or- .vintrc
+  """ Project Config: /path/to/project/.vintrc.yaml | .vintrc.yml | .vintrc
+  """ Default Config: default_config.yaml
+  """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  Plug 'ynkdir/vim-vimlparser', { 'for': 'vim' }  " dependency for vim-vimlint
+  Plug 'syngan/vim-vimlint', { 'for': 'vim' }
+
+  " YAML Lint
+  """ @see https://github.com/adrienverge/yamllint
+  """ @see https://yamllint.readthedocs.io/en/stable/configuration.html
+  """ TO INSTALL: $ pip install --user yamllint
+  """ IN ORDER BY PREFERENCE:
+  """ Config CWD: ./.yamllint
+  """ Config XDG: $XDG_CONFIG_HOME/yamllint/config
+  """ Config USER: $HOME/.config/yamllint/config
+  """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+  if exists("g:rr_use_markdown") && g:rr_use_markdown
+    " MARKDOWN & PANDOC -- Need I say more?
+    """ @see http://pandoc.org/
+    """ @see https://github.com/vim-pandoc/vim-pandoc
+    """ default .md files to MarkDown (not Modula-2)
+    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    autocmd vimrc_plugins BufRead,BufNewFile {*.md,*.mkd,*.markdown} set filetype=markdown
+    Plug 'vim-pandoc/vim-pandoc', { 'for': 'markdown' }
+    Plug 'vim-pandoc/vim-pandoc-syntax', { 'for': 'markdown' }
+    " @see https://github.com/tpope/vim-markdown
+    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    let g:markdown_fenced_languages = ['html', 'python', 'bash=sh']
+    let g:markdown_minlines = 100
+  endif
+
+  if exists("g:rr_use_web") && g:rr_use_web
+    " WEB Markup & Styling Syntax Checking/Highlighting Goodness
+    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    autocmd vimrc_plugins BufRead,BufNewFile {Vagrantfile,Guardfile,Gemfile,Rakefile,Capfile,*.rake,config.ru} set filetype=ruby
+    autocmd vimrc_plugins BufRead,BufNewFile {COMMIT_EDITMSG} set filetype=gitcommit
+    autocmd vimrc_plugins BufRead,BufNewFile {*.json} set filetype=json
+    " autocmd vimrc_plugins BufRead,BufNewFile {*.json} set ft=javascript
+    Plug 'othree/html5-syntax.vim', { 'for': 'html' }
+    Plug 'othree/xml.vim', { 'for': 'html' }
+    Plug 'hail2u/vim-css3-syntax', { 'for': 'css' }
+    Plug 'skammer/vim-css-color', { 'for': 'css' }
+    " JSON, Javascript, Coffeescript, Oh My !!
+    """ @see https://davidosomething.com/blog/vim-for-javascript/
+    """ TODO: Plug 'Shutnik/jshint2.vim'
+    """ @see https://github.com/tpope/vim-jdaddy
+    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
+    Plug 'elzr/vim-json', { 'for': 'json' }
+    Plug 'tpope/vim-jdaddy', { 'for': ['json', 'javascript'] }
+  endif
+endif
+
+if exists("g:rr_use_sql") && g:rr_use_sql
+  " SQL Goodness -- MAJOR !!
+  """ @see https://github.com/tpope/vim-dadbod
+  """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  Plug 'tpope/vim-dadbod', { 'for': 'sql' }
+  " SQL Formatter
+  """ @see https://github.com/smintz/vim-sqlutil
+  """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  Plug 'smintz/vim-sqlutil', { 'for': 'sql' }
+endif
+
+if exists("g:rr_use_autoc") && g:rr_use_autoc
+  " TODO: validate + invesitgate
+  """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  Plug 'vimscripts/AutoComplPop'
+  let g:acp_behaviorHtmlOmniLength=4
+  let g:acp_behaviorCssOmniPropertyLength=4
+endif
+
+" PLUGINS END
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+call plug#end()
+
+" vim: set filetype=vim :

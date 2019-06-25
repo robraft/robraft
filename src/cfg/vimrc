@@ -1,252 +1,176 @@
-"-- usually named '_vimrc' or '.vimrc'
+"file: vimrc, Customize Vim Settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if &shell =~# 'fish$'
-    set shell=/bin/sh
-endif
-nmap <Leader>XX  :tabedit ++bin $HOME/.vimrc <Enter>
-nmap <Leader>acf :exe ":normal a" . fnamemodify(@%, ":t") . "\\e" <Enter>
-nmap <Leader>acd :exe ":normal a" . strftime("%Y-%b-%d, rwr ") <Enter>
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""" PENDING TOPICS
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""" https://urldefense.proofpoint.com/v2/url?u=http-3A__vim.wikia.com_wiki_Use-5FVim-5Flike-5Fan-5FIDE&d=BQIGaQ&c=kRG5nTkfHQDBBUG6z7u8nA&r=wjrE5ng17Wy1xsV1d8IVrso_I0TIchVSH2KuSGdaW6c&m=TwHFS4P497S2gmREGcDHeFNcHuJBkrefKvvXLo0kXi0&s=6MaxTFcg4J4VPeMJP7gLFxq9JUID0CrEnMVln-7kIQM&e=
-""" https://urldefense.proofpoint.com/v2/url?u=http-3A__stackoverflow.com_questions_3232518_how-2Dto-2Dupdate-2Dvim-2Dto-2Dcolor-2Dcode-2Dnew-2Dhtml-2Delements&d=BQIGaQ&c=kRG5nTkfHQDBBUG6z7u8nA&r=wjrE5ng17Wy1xsV1d8IVrso_I0TIchVSH2KuSGdaW6c&m=TwHFS4P497S2gmREGcDHeFNcHuJBkrefKvvXLo0kXi0&s=JFn4RYqKNwXWtKqVbfI-e8RczRlR1qs3b_yJrS3_Shw&e=
-""" https://urldefense.proofpoint.com/v2/url?u=http-3A__www.vim.org_scripts_script.php-3Fscript-5Fid-3D3232&d=BQIGaQ&c=kRG5nTkfHQDBBUG6z7u8nA&r=wjrE5ng17Wy1xsV1d8IVrso_I0TIchVSH2KuSGdaW6c&m=TwHFS4P497S2gmREGcDHeFNcHuJBkrefKvvXLo0kXi0&s=Dw_DWW_4Ahu78S8mS7D-_vREQMjgmFTYN4XCr8Ux60k&e=
-""" https://urldefense.proofpoint.com/v2/url?u=http-3A__www.vim.org_scripts_script.php-3Fscript-5Fid-3D3236&d=BQIGaQ&c=kRG5nTkfHQDBBUG6z7u8nA&r=wjrE5ng17Wy1xsV1d8IVrso_I0TIchVSH2KuSGdaW6c&m=TwHFS4P497S2gmREGcDHeFNcHuJBkrefKvvXLo0kXi0&s=fr3h7icvARPTAeWzobELFcGyNFkNAm5FzzIM1JQEbeE&e=
-"////////////////////////////////////////////////////////////////////////////
-"///  BUNDLE MGMT BY VUNDLE
-"///  Keep Plugin commands between vundle#begin/end.
-"///  use: vim +PluginInstall <cr> to update/install from cmd line
-"////////////////////////////////////////////////////////////////////////////
-"-- Use Vim settings, rather then Vi settings (much better!).
-"-- This must be first, because it changes other options as a side effect.
 set nocompatible              " be iMproved, required
-filetype off                  " required
 
-" set the runtime path to include Vundle and initialize
-set rtp+=$HOME/vimfiles/bundle/Vundle.vim
-let g:path=$HOME . '/vimfiles/bundle'
-call vundle#begin(path)
+" TODO  {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" http://vimcolors.com/
+" https://devhub.io/repos/uhub-awesome-viml
+" https://github.com/tlhunter/vimrc
+" http://vim.wikia.com/wiki/Use_Vim_like_an_IDE
+" https://stackoverflow.com/questions/3232518/how-to-update-vim-to-color-code-new-html-elements
+" https://www.vim.org/scripts/script.php?script_id=3232
+" https://www.vim.org/scripts/script.php?script_id=3236
+" }}}
 
-" let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
+" GLOBAL CONFIG SWITCHES   {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:rr_use_autoc = 0
+let g:rr_use_cygwin= 0
+let g:rr_use_sql = 0
+let g:rr_use_syntastic = 0
+  let g:rr_use_markdown = 0
+  let g:rr_use_web = 0
+" }}}
 
-""""""" GOD Bless TPOPE !!
-Plugin 'tpope/vim-git'
-Plugin 'tpope/vim-fugitive'
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Plugin 'tpope/vim-repeat'
-Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-endwise'
-Plugin 'tpope/vim-commentary'
-""" Plugin 'tpope/vim-speeddating'
-Plugin 'tpope/vim-unimpaired'
+" DEFINE AUTOCMD GROUP   {{{1
+""" @see http://rbtnn.hateblo.jp/entry/2014/12/28/010913
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has("autocmd")
+  augroup vimrc
+    autocmd!
+  augroup END
+endif  " }}}
 
-""" EditorConfig plugin
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Plugin 'editorconfig/editorconfig-vim'
+" LOAD PLUGINS
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+source $HOME/.vim/vimrc_plugins
 
-""" MATCHing braces & INDENT Visual Guides
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Plugin 'tmhedberg/matchit'
-Plugin 'nathanaelkane/vim-indent-guides'
+" Convenience Mappings   {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Don't use Ex mode, use Q for formatting
+map Q gq
+nmap <Leader>XX  :tabedit ++bin $HOME/.vimrc <Enter>
+command XX   :tabedit ++bin $HOME/.vimrc
+nmap gxx :tabedit ++bin $HOME/.vimrc <Enter>
+nmap gbf :execute ":normal a" . fnamemodify(@%, ":t") . "\\e" <Enter>
+nmap gbs :execute ":normal a" . strftime("%Y-%b-%d, rwr ") <Enter>
+nmap gmd :call Markdown() <Enter>
+nmap gfv :call TidyVim() <Enter>
+command BW execute My_Wipe_Hidden_Unloaded_Buffers()
 
-""" ALIGNMENT for the OCD Developer
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Plugin 'Align'
+" FUNCTION Wipe_Hidden_Unloaded_Buffers   {{{2
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if ! exists("*My_Wipe_Hidden_Unloaded_Buffers")
+  function My_Wipe_Hidden_Unloaded_Buffers()
+    " capture output from ':ls u' into local variable
+    redir => l:unloaded_buffers
+      " silent ls uh-
+      silent ls u
+    redir END
 
-""" AUTO-COMPLETION Voodoo
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""" Plugin 'AutoComplPop', {'pinned': 1}
-"" Plugin 'AutoComplPop'
+    " define list of buffers
+    let l:buflist=[]
 
-""" SYNTASTIC -- syntax checking for the masses
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Plugin 'scrooloose/syntastic'
+    " split output from ':ls u' into individual lines
+    for l:buffer in split(l:unloaded_buffers, '\n')
+      " the first sequence of digits is the buffer #
+      call add(l:buflist, matchstr(l:buffer,'\d\+'))
+    endfor
 
-""" VIM Syntax Checking -- gotta have it
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Plugin 'syngan/vim-vimlint'
-Plugin 'ynkdir/vim-vimlparser'
+    let l:return_this = 'echo "nothing to do"'
+    if ! empty(l:buflist)
+      let l:return_this = 'bwipeout ' . join(l:buflist)
+    endif
 
-""" FISH Syntax Checking -- gotta have it
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Plugin 'dag/vim-fish'
+    return l:return_this
+  endfunction
+endif  " }}}
+"}}}
 
-""" SQL Goodness -- MAJOR !!
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""" Plugin 'dbext.vim', {'pinned': 1}
-Plugin 'dbext.vim'
-Plugin 'smintz/vim-sqlutil'
+" ASSORTED SETTINGS  {{{1
+""" @see :h sh-embed
+""" @see :h sh.vim
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:mapleader='\'             " The Elusive MapLeader character
+let g:is_bash = 1               " default shell scripts to Bash syntax
+let g:sh_minlines = 250         " fine-tune syntax highlighting for Bash
+set autowriteall                " write contents of file if modified
+set clipboard=unnamed           " Use global/X11 clipboard
+set backspace=indent,eol,start  " Backspacing over everything in insert mode
+set cpoptions=aceFs             " Compatability options  -> :h 'cpoptions'
 
-""" WEB Markup & Styling Syntax Checking/Highlighting Goodness
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""" Plugin 'mattn/webapi-vim'
-""" Plugin 'mattn/emmet-vim'
-Plugin 'othree/html5-syntax.vim'
-Plugin 'othree/xml.vim'
+set diffopt=filler,iwhite  " diff settings  -> :h 'diffopt'
+set history=500            " command line history
+set incsearch              " do incremental searching
+set ignorecase             " ignore case in search patterns
+set smartcase              " override 'ignorecase' when upper case in search
+set linebreak              " wrap long lines based on chars in  'breakat'
+set nowrap                 " disable wrapping display of long lines
+set mouse=a                " mouse works fine in most terms, enable it.
+set showcmd                " display incomplete commands
+                           " 'listchars' is overwritten in gvimrc
+set listchars=nbsp:^,eol:$,tab:>-,trail:_,extends:>,precedes:<
+"}}}
 
-Plugin 'hail2u/vim-css3-syntax'
-Plugin 'skammer/vim-css-color'
-
-""" MARKDOWN & PANDOC -- Need I say more?
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Plugin 'tpope/vim-markdown'
-""" Name collision with tpope/markdown  TODO: figure out which one is best
-""" Plugin 'hallison/vim-markdown'
-Plugin 'vim-pandoc/vim-pandoc'
-Plugin 'vim-pandoc/vim-pandoc-syntax'
-
-""" JSON, Javascript, Coffeescript, Oh My !!
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""" Plugin 'Shutnik/jshint2.vim'
-""" Plugin 'pangloss/vim-javascript'
-""" Plugin 'elzr/vim-json'
-""" Plugin 'kchmck/vim-coffee-script'
-
-""" MS-PS1 & MediaWiki
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""" Plugin 'PProvost/vim-ps1'
-""" Plugin 'chikamichi/mediawiki.vim'
-
-""" TODO: What IS L9 ??
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""" Plugin 'L9'
-
-""" YCM -- Could NOT get the YCM support libs compiled in Cygwin64 :-(
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""" Plugin 'Valloric/YouCompleteMe'
-
-""" PERL Omni Completion
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""" Plugin 'c9s/perlomni.vim'
-
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-
-"////////////////////////////////////////////////////////////////////////////
-""" Pathogen package manager (see $VIM/vimfiles/bundle/...)
-""" @see https://urldefense.proofpoint.com/v2/url?u=https-3A__github.com_tpope_vim-2Dpathogen&d=BQIGaQ&c=kRG5nTkfHQDBBUG6z7u8nA&r=wjrE5ng17Wy1xsV1d8IVrso_I0TIchVSH2KuSGdaW6c&m=TwHFS4P497S2gmREGcDHeFNcHuJBkrefKvvXLo0kXi0&s=sXh8Aht82kxMSrqJvaT8kfO1gOqSfzgj6LLZKfEObA0&e=
-""" call pathogen#infect()
-""" set sessionoptions-=options
-""" :Helptags
-"////////////////////////////////////////////////////////////////////////////
-
-"////////////////////////////////////////////////////////////////////////////
-"/// DBEXT PLUGIN SETTINGS and CONNECTION PROFILES
-"////////////////////////////////////////////////////////////////////////////
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""" sample dbext modeline...
-""" /*  dbext:profile=FCA_DEV  */
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:dbext_default_profile_tutorial = 'type=SQLITE:SQLITE_bin=/usr/bin/sqlite3:host=local:dbname=~/proj/aba_report/sql/tutorial.db'
-let g:dbext_default_profile_ORA = 'type=ORA:srvname=D085:user=OFCA:passwd=xzjstmrq'
-let g:dbext_default_profile_FCA_DEV = 'type=ORA:srvname=D085:user=OFCA:passwd=xzjstmrq'
-let g:dbext_default_profile_FCA_DEV_STG = 'type=ORA:srvname=D085:user=OFCASTG:passwd=cmvughkk'
-let g:dbext_default_profile_FCA_TST = 'type=ORA:srvname=D085:user=dv03737:passwd=Gr3yUpN0'
-let g:dbext_default_profile_FCA_TST_STG = 'type=ORA:srvname=D085:user=dv03737:passwd=Gr3yUpN0'
-
-let g:dbext_default_use_sep_result_buffer = 1
-let g:dbext_default_replace_title = 1
-let g:dbext_default_use_win32_filenames = 1
-let g:dbext_default_window_use_horiz = 0
-let g:dbext_default_window_use_right = 1
-let g:dbext_default_window_width = 30
-
-"""" SQLUTIL PLUGIN SETTINGS
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:sqlutil_keyword_case = '\U'
-let g:sqlutil_indent_nested_blocks = 1
-let g:sqlutil_wrap_long_lines = 1
-let g:sqlutil_split_unbalanced_paran = 1
-
-"////////////////////////////////////////////////////////////////////////////
-"/// VARIOUS SETTINGS
-"////////////////////////////////////////////////////////////////////////////
-
-"""""""""""""""""""""""""""""""""""""""
-""" AutoComplPop
-"""""""""""""""""""""""""""""""""""""""
-let g:acp_behaviorHtmlOmniLength=4
-let g:acp_behaviorCssOmniPropertyLength=4
-"""""""""""""""""""""""""""""""""""""""
-
-let g:mapleader='\'
-
-""" Emmet
-let g:user_emmet_leader_key='\'
-
-"------------------------------------------------------------------------------
-"-- NETRW
-"------------------------------------------------------------------------------
-""" vertical tree liststyle for :Explore
-let g:netrw_liststyle = 3
-""" horizontal split to the bottom
-let g:netrw_alto = 1
-""" vertical split to the right
-let g:netrw_altv = 1
-let g:netrw_winsize = 40
-"""
-let g:netrw_preview = 1
-""" assume scp is from cygwin
-let g:netrw_cygwin = 1
-
-let g:netrw_browse_split = 4
-"------------------------------------------------------------------------------
-
-"------------------------------------------------------------------------------
-"-- CLEVER BACKUP LOGIC...
-"------------------------------------------------------------------------------
-if has("vms")
-  set nobackup    " do not keep a backup file, use versions instead
-else
-  "-- Save backups in ~/tmp; fail over to $TEMP, then currentdir in case
-  "-- of problems
-  let &backupdir = $HOME . '/tmp/' . strftime('%Y') . '.vim/' . strftime('%m')
-  let &backupdir .= ',' . $HOME . '/tmp/vim/' . strftime('%Y') . '.vim/' . strftime('%m')
-  let &backupdir .= ',' . $TEMP . ', /tmp' . ',.'
-  set backup    " keep a backup file
+" FOLDING {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has("folding")
+  set foldenable
+  set foldcolumn=2
+  set foldmethod=marker
 endif
-"------------------------------------------------------------------------------
+" }}}
 
-"-- allow backspacing over everything in insert mode
-set backspace=indent,eol,start
-set cpoptions=aceFs
-if winheight(0) > 49
-  set cmdheight=6
-elseif winheight(0) > 39
-  set cmdheight=4
-elseif winheight(0) > 30
-  set cmdheight=3
-elseif winheight(0) > 20
-  set cmdheight=2
+" INDENTING   {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set autoindent   " always set autoindenting on
+set smartindent
+set smarttab
+set expandtab
+set shiftwidth=4
+set softtabstop=4
+set tabstop=4
+
+" @see :h indent_guides
+" @see :Plug 'nathanaelkane/vim-indent-guides'
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_space_guides = 1
+let g:indent_guides_tab_guides = 1
+let g:indent_guides_guide_size = 1
+let g:indent_guides_indent_levels = 8
+let g:indent_guides_start_level = 2
+let g:indent_guides_auto_colors = 0
+let g:indent_guides_exclude_filetypes = ['help', 'nerdtree']
+
+if has("autocmd")
+  " ON ALL FILES
+  "" @see :tab h indent_guides.txt
+  "" @see 'nathanaelkane/vim-indent-guides'
+  autocmd vimrc VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=darkgrey guibg=#555555
+  autocmd vimrc VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=darkgrey guibg=#555555
 endif
-if has("cryptv")
-  set cryptmethod=blowfish
-endif
+"}}}
+
+" CURSORLINE, LINE NUMBERS, SPLIT  {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set splitbelow
+" set splitright
+set number
 if v:version > 700
   set cursorline
+endif "}}}
+
+" NETRW  {{{
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:netrw_liststyle = 3   " vertical tree list style for :Explore
+let g:netrw_alto = 0        " if set, horizontal split to the bottom
+let g:netrw_altv = 1        " if set, vertical split to the right
+let g:netrw_winsize = 40
+let g:netrw_preview = 1
+let g:netrw_cygwin = g:rr_use_cygwin  " is  scp is from cygwin ?
+let g:netrw_browse_split = 2 " split on browse: 1=horiz, 2=vert, 3=tab
+let g:netrw_bufsettings="noma nomod nobl nowrap ro bh=wipe bt=nowrite cc=0 nocul"
+
+if has("autocmd")
+  autocmd vimrc FileType netrw  setlocal cursorline
 endif
-set diffopt=filler,iwhite
-set eadirection=ver
-set noequalalways
-set expandtab
-""" set   foldcolumn=4
-""" let   javaScript_fold=1
-set history=1000 " keep 1000 lines of command line history
-set incsearch   " do incremental searching
-set ignorecase
-set laststatus=2
-set linebreak
-"""   listchars=default set in vanilla character mode...
-"""        ...  this set is overwritten in gvimrc
-set listchars=nbsp:^,eol:$,tab:>-,trail:_,extends:>,precedes:<
-"------------------------------------------------------------------------------
-"-- handle utf-8 intelligently
-"-- @see https://urldefense.proofpoint.com/v2/url?u=http-3A__vim.wikia.com_wiki_VimTip246&d=BQIGaQ&c=kRG5nTkfHQDBBUG6z7u8nA&r=wjrE5ng17Wy1xsV1d8IVrso_I0TIchVSH2KuSGdaW6c&m=TwHFS4P497S2gmREGcDHeFNcHuJBkrefKvvXLo0kXi0&s=5-JkSEDwltW-1g3yMBYpS_X7BaycbvX4CIl7ghMhbek&e=
-"------------------------------------------------------------------------------
+"}}}
+
+" HANDLE UTF-8 Intelligently {{{1
+""" @see http://vim.wikia.com/wiki/Working_with_Unicode
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has("multi_byte")
   if &termencoding == ""
     let &termencoding = &encoding
@@ -256,336 +180,473 @@ if has("multi_byte")
   "setglobal bomb
   set fileencodings=utf-8,ucs-bom,latin1
 endif
+
 if &fileencoding =~# 'utf-8'
   scriptencoding utf-8
   set listchars+=nbsp:º
   scriptencoding
-endif
-"----------------------------------------------------------------------------
-set modeline
-"-- In many terminal emulators the mouse works just fine, thus enable it.
-set mouse=a
-set number
-"-- set patchmode=.orginal
-set printfont=Courier_New:h9
-set printoptions=left:0.3in,right:0.25in,duplex:on,portrait:y
-set printheader=%<%f%h%m%=%{strftime('%c')}\ \ \ \ Page\ %N
+endif  "}}}
+
+" CMD HEIGHT  {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if winheight(0) > 49
+  set cmdheight=6
+elseif winheight(0) > 39
+  set cmdheight=4
+elseif winheight(0) > 30
+  set cmdheight=3
+elseif winheight(0) > 20
+  set cmdheight=2
+endif  "}}}
+
+" TABLINE Settings {{{1
+" ShowTabLine:
+""" 0:never 1:if more than one tab page 2: always
+set showtabline=1
+" also, @see COLORSCHEME SETTINGS
+" }}}
+
+" STATUSLINE Settings {{{1
+""" @see http://vim.wikia.com/wiki/Show_fileencoding_and_bomb_in_the_status_line
+""" sql filetype display [userid,dbtype-srvname] in statusline
+""" from dbext plugin  TODO: Update to use tpope/dadbob plugin
+""" TODO: @see https://github.com/tpope/vim-flagship
+""" TODO: @see https://github.com/tpope/vim-fugitive
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set laststatus=2
 set ruler   " show the cursor position all the time
-if v:version > 700
-  set sessionoptions=blank,buffers,folds,globals,help,resize,sesdir,tabpages,winsize,winpos
-endif
-"-- set shiftround
-""" set shiftwidth=4
-set showcmd   " display incomplete commands
-set smartcase
-set smarttab
-""" set softtabstop=4
-set splitbelow
-set splitright
-
-set nowrap
-
-"-- For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries
-"-- let &guioptions = substitute(&guioptions, "t", "", "g")
-
-"-- Don't use Ex mode, use Q for formatting
-map Q gq
-
-"-------------------------------------------------------------------------------
-"-- CONFIGURE STATUSLINE
-"-- display fileencoding in statusline
-"-- @see http://vim.wikia.com_wiki_Show-5Ffileencoding-5Fand-5Fbomb-5Fin-5Fthe-5Fstatus-5Fline&d=BQIGaQ&c=kRG5nTkfHQDBBUG6z7u8nA&r=wjrE5ng17Wy1xsV1d8IVrso_I0TIchVSH2KuSGdaW6c&m=TwHFS4P497S2gmREGcDHeFNcHuJBkrefKvvXLo0kXi0&s=_47J64A2nq509WPs4vECZU33iZClOwoii2UpS2vOk7w&e=
-"-- display git status using fugitive plugi
-"-----------------------------------------------------------------------------
 if has("statusline")
- set statusline=%.10y%<\ %f\ %m%r%{fugitive#statusline()}%=\ %{\"[\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\",\".\&ff.\"]\ \"}%k\ %-14.(%l,%c%V%)\ %P
-endif
+  """ [filetype] filename [modified-flag] [readonly-flag]
+  set statusline=%.10y%<\ %f\ %m%r
+  """ @see :h fugitive-statusline
+  set statusline+=\ %{FugitiveStatusline()}
+  """ if filetype==sql (srvname.dbtype,user)
+  """ set statusline+=%{(&filetype==\"sql\"?tolower(\"\ (\".DB_listOption(\"user\").\",\".DB_listOption(\"type\").\"-\".DB_listOption(\"srvname\").\")\"):\"\")}
+  set statusline+=%{(&filetype==\"sql\"?tolower(\"\ (\".DB_listOption(\"srvname\").\"\.\".DB_listOption(\"type\").\",\".DB_listOption(\"user\").\")\"):\"\")}
+  """ divider for right-justified right-half of the statusline
+  set statusline+=%=
+  """ lines,columns  loc%
+  set statusline+=%k\ \ %l,%c\ \ %P
+  """ fileencoding blah blah blah
+  set statusline+=\ \ %{\"[\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\",\".\&ff.\"]\ \"}
+endif "}}}
 
-"////////////////////////////////////////////////////////////////////////////
-"// SYNTASTIC PLUGIN AND SYNTAX-RELATED SETTINGS
-"// http://www.vim.org_scripts_script.php-3Fscript-5Fid-3D2736&d=BQIGaQ&c=kRG5nTkfHQDBBUG6z7u8nA&r=wjrE5ng17Wy1xsV1d8IVrso_I0TIchVSH2KuSGdaW6c&m=TwHFS4P497S2gmREGcDHeFNcHuJBkrefKvvXLo0kXi0&s=f8cffUhNh95jkRyoOsp8t0tIY2O8SFliQ5o6K41QTOs&e=
-"////////////////////////////////////////////////////////////////////////////
-
-"-- ----------------------------------------------------------------------------
-"-- Switch syntax highlighting on, when the terminal has colors
-"-- Also switch on highlighting the last used search pattern.
-"-- ----------------------------------------------------------------------------
-if &t_Co > 2
-  syntax on
-  set hlsearch
-endif
-
-"-------------------------------------------------------------------------------
-"-- ADD SYNTASTIC TO STATUSLINE
-"-----------------------------------------------------------------------------
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-"-- misc: needs to go somewhere... why not here
+" COLORSCHEME Settings  {{{1
+""" when the terminal has colors
+""" Also switch on highlighting the last used search pattern.
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" filetype plugin indent on """ already handled by vim-plug
+" syntax on                 """ already handled by vim-plug
 set synmaxcol=9999
-
-let g:syntastic_cursor_column = 0
-let g:syntastic_enable_balloons = 1
-let g:syntastic_enable_highlighting = 1
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_jump = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 0
-let g:syntastic_check_on_wq = 0
-""" let g:syntastic_html_validator_api = 'https://urldefense.proofpoint.com/v2/url?u=http-3A__localhost-3A8888_&d=BQIGaQ&c=kRG5nTkfHQDBBUG6z7u8nA&r=wjrE5ng17Wy1xsV1d8IVrso_I0TIchVSH2KuSGdaW6c&m=TwHFS4P497S2gmREGcDHeFNcHuJBkrefKvvXLo0kXi0&s=cZzs_17zek9nJsdrxcMi7jGOxYgqx7x_OaTN0VUeAXY&e= '
-""" let g:syntastic_html_validator_parser  = 'html5'
-""" ++++++++++++++++++++++++++++++++++++++++++++++++++++
-let g:syntastic_vim_validator = 'vimlint'
-let g:syntastic_vim_vimlint_quiet_messages = {
-    \ "level":   "errors",
-    \ "regex":   "\[EVL203\]",
-    \ "file":    "_g?vimrc" }
-""" ++++++++++++++++++++++++++++++++++++++++++++++++++++
-""" if exists("/mnt/c/Users/dv03737/AppData/Roaming/npm/jslint")
-"""   let g:syntastic_javascript_jslint_exec  = '/mnt/c/Users/dv03737/AppData/Roaming/npm/jslint'
-""" endif
-""" if exists("c:/Users/dv03737/AppData/Roaming/npm/jslint.cmd")
-"""   let g:syntastic_javascript_jslint_exec  = 'c:/Users/dv03737/AppData/Roaming/npm/jslint.cmd'
-""" endif
-""" if exists("/opt/bin/jsl.exe")
-"""   let g:syntastic_javascript_jsl_exec  = '/opt/bin/jsl.exe'
-""" endif
-""" if exists("./node_modules/.bin/eslint")
-  let g:syntastic_javascript_eslint_exec  = './node_modules/.bin/eslint'
-""" endif
-""" let g:syntastic_javascript_checkers = ["jshint", "eslint"]
-let g:syntastic_javascript_checkers = ["eslint"]
-""" ++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-""" let g:jshint_command = 'C:/opt/apps/NodeJSPortable/Data/node_modules/jshint/bin/jshint'
-""" ++++++++++++++++++++++++++++++++++++++++++++++++++++
-let g:syntastic_java_javac_config_file_enabled = 1
-let g:syntastic_java_javac_autoload_maven_classpath = 1
-""" ++++++++++++++++++++++++++++++++++++++++++++++++++++
-""" let g:syntastic_enable_perl_checker = 1
-
-""" let g:syntastic_mode_map = { 'mode': 'active', 'active_filetypes': ['javascript'] }
-
-"" autocmd FileType conf if stridx(expand("%:p"), "/some/path/") == 0 |
-""         \ let b:syntastic_checkers = ["pylint"] | endif
-
-""" END SYNTASTIC
-"////////////////////////////////////////////////////////////////////////////
-
-"////////////////////////////////////////////////////////////////////////////
-"/// INDENT GUIDES PLUGIN, INDENT-RELATED SETTINGS AND COLORSCHEME
-"////////////////////////////////////////////////////////////////////////////
-
-""" colorscheme hybrid
-""" colorscheme grb256
-""" colorscheme jellybeans
-""" colorscheme darkblue
-colorscheme koehler
-
-set autoindent		" always set autoindenting on
-set smartindent
-
-let g:indent_guides_enable_on_vim_startup = 1
-let g:indent_guides_space_guides = 1
-let g:indent_guides_guide_size = 1
-let g:indent_guides_start_level = 2
-let g:indent_guides_auto_colors = 0
-autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=lightgrey guibg=#555555
-autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=lightgrey guibg=#555555
-
-""" override ColorColumn to make it light grey
-if exists('+colorcolumn')
-  set colorcolumn=80
-  hi ColorColumn ctermbg=lightgrey guibg=#555555
-else
-  au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+set hlsearch
+set termguicolors    " enable True Color   @see :h xterm-true-color
+set background=dark
+if has("autocmd")
+  augroup myColors
+  au!
+  augroup END
 endif
-"////////////////////////////////////////////////////////////////////////////
 
-"////////////////////////////////////////////////////////////////////////////
-"/// BOB'ISMS...
-"////////////////////////////////////////////////////////////////////////////
+colorscheme default
+if $TERM != "screen"
+" colorscheme grb256    " {{{2
+if has("autocmd")
+  "" ColorColumn a pleasing light grey
+  set colorcolumn=80
+  au myColors ColorScheme grb256 hi ColorColumn ctermbg=darkgrey guibg=#333333
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function Markdown()
-  ":silent exec '!Markdown.pl --html4tags "' . expand('%:p') . '" > "' . expand('%:p') . '.html"'
-  if has("X11")
-    """ if ! exists(expand("%:p:h") . "/html")
-    """   :silent exec '!mkdir "' . expand("%:p:h") . '/html"'
-    """ endif
-    """ :silent exec '!pandoc -f markdown -t html --ascii -S --email-obfuscation=none --section-divs --output $(cygpath -w "' . expand('%:p:h') . "/html/" . expand("%:p:t:r") . '.html") $(cygpath -w "' . expand('%:p') . '")'
-    :silent exec '!pandoc -f markdown -t html --ascii -S --email-obfuscation=none --section-divs --output $(cygpath -w "' . expand('%:p:h') . "/" . expand("%:p:t:r") . '.html") $(cygpath -w "' . expand('%:p') . '")'
-  else
-    """ if ! exists(expand("%:p:h") . "\\html")
-    """   :silent exec '!mkdir "' . expand("%:p:h") . '\\html"'
-    """ endif
-    """ :silent exec '!pandoc -f markdown -t html --ascii -S --email-obfuscation=none --section-divs --output "' . expand('%:p:h') . "\\html\\" . expand("%:p:t:r") . '.html" "' . expand('%:p') . '"'
-    :silent exec '!pandoc -f markdown -t html --ascii -S --email-obfuscation=none --section-divs --output "' . expand('%:p:h') . "\\" . expand("%:p:t:r") . '.html" "' . expand('%:p') . '"'
+  "" TODO Highlighting
+  au myColors ColorScheme grb256 hi Todo term=standout ctermfg=black ctermbg=yellow guifg=Blue guibg=Yellow
+  "" Tab Line
+  au myColors ColorScheme grb256 hi TabLine term=bold,reverse cterm=bold ctermfg=81 ctermbg=darkgrey gui=bold guifg=darkblue guibg=darkgrey
+  au myColors ColorScheme grb256 hi TabLineSel term=reverse cterm=bold ctermfg=black ctermbg=81 gui=bold guifg=grey guibg=darkblue
+  au myColors ColorScheme grb256 hi TabLineFill term=bold,reverse cterm=bold ctermfg=81 ctermbg=darkgrey gui=bold guifg=darkblue guibg=darkgrey
+  "" @see :tab h 'number'
+  au myColors ColorScheme grb256 hi LineNr guifg=#888888
+  " au myColors ColorScheme grb256 hi CursorLineNr
+
+  if has("folding")
+    "" @see :tab h fold-options
+    " hi FoldColumn guibg=darkgrey guifg=white
+    au myColors ColorScheme grb256 hi FoldColumn guibg=#555555
   endif
-  :echomsg "[pandoc] See file '" . expand('%:p:~:.:r') . ".html'"
-endfunction
 
+  if has("signs")
+    "" @see :tab h 'signs'
+    au myColors ColorScheme grb256 hi SignColumn guibg=#555555
+  endif
+endif
+colorscheme grb256    " }}}
+
+" colorscheme gruvbox  " {{{2
+" let g:gruvbox_bold = 1
+" let g:gruvbox_italic = 1
+" let g:gruvbox_underline = 1
+" let g:gruvbox_undercurl = 1
+" let g:gruvbox_contrast_dark = 'hard'    " possible values: soft, medium, hard
+" let g:gruvbox_contrast_light= 'hard'    " possible values: soft, medium, hard
+" }}}
+
+" colorscheme koehler  " {{{2
+" "" Status Line
+" hi StatusLine term=bold,reverse cterm=bold ctermfg=white ctermbg=darkgrey gui=bold guifg=blue guibg=white
+" hi StatusLineNC term=bold,reverse cterm=bold ctermfg=cyan ctermbg=darkgrey gui=bold guifg=blue guibg=white
+" hi StatusLineTerm term=bold,reverse cterm=bold ctermfg=0 ctermbg=121 gui=bold guifg=bg guibg=LightGreen
+" hi StatusLineTermNC term=reverse ctermfg=0 ctermbg=121 guifg=bg guibg=LightGreen
+" "" Tab Line
+" hi TabLine term=bold,reverse cterm=bold ctermfg=81 ctermbg=darkgrey gui=bold guifg=blue guibg=white
+" hi TabLineSel term=reverse cterm=bold ctermfg=black ctermbg=81 gui=bold guifg=white guibg=blue
+" hi TabLineFill term=bold,reverse cterm=bold ctermfg=81 ctermbg=darkgrey gui=bold guifg=blue guibg=white
+" "" TODO Highlighting
+" hi Todo term=standout ctermfg=black ctermbg=yellow guifg=Blue guibg=Yellow
+" "" ColorColumn a pleasing light grey
+" if has("+colorcolumn")
+"   set colorcolumn=80
+"   hi ColorColumn ctermbg=darkgrey guibg=#555555
+" else
+"   autocmd vimrc BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+" endif
+" }}}
+endif
+"}}}
+
+" VIM STARTUP & WINDOW RESIZE LOGIC {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function TidyVim()
-  :w
-  :%!tidy_vim --show-body-only
-endfunction
+if has("autocmd")
+  " ON WINDOW RESIZE-> Resize window splits
+  """ Thank you https://github.com/spicycode/Vimlander-2-The-Quickening
+  autocmd vimrc VimResized * exe "normal! \<c-w>="
 
+  " TODO: ON VIM STARTUP-> open :Lexplore
+  """ augroup VimStartup
+  """   au!
+  """   au VimEnter * if expand("%") == "" && argc() == 0 &&
+  """   \ (v:servername =~ 'GVIM\d*' || v:servername == "")
+  """   \ | 30Lexplore . | endif
+  """ augroup END
+endif
+"}}}
+
+" FILE OPEN & LOAD LOGIC  {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:function SQLFixCase()
-  "" Camelcase the SQL Column Names and ignore Schema Prefixes
-  "" (ignores lines containing comments and lines containing a string literal)
-  "" 1. lowercase everything
-  "" 2. title case column names
-  "" 3. uppercase 2 char 'chunks'
-  "" 4. uppercase sql keywords
-  "" 5. uppercase schema prefixes
-  :g!/\/\*\|\*\/\|^ *\*\|'\|"/s/[A-Z]/\L&/g
-  :g!/\/\*\|\*\/\|^ *\*\|'\|"/s/\v([A-Za-z0-9_]+\.)@!(_|\.|<)@<=[a-z]/\u&/g
-  :g!/\/\*\|\*\/\|^ *\*\|'\|"/s/\v([A-Z][a-z]([_])@=)|([A-Z][a-z]([ ,\t\n])@=)/\U&/g
-  :g!/\/\*\|\*\/\|^ *\*\|'\|"/s/\v<(select|from|where|in|and|insert|into|group|by|order|having|update|sysdate|as|commit)>/\U&/gi
-  :g!/\/\*\|\*\/\|^ *\*\|'\|"/s/\v([a-z0-9_]+)(\.)@=/\U&/gi
-:endfunction
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-command HI  :echon " autoindent="&ai " smartindent="&si " cindent="&ci
-             \ " cpoptions="&cpo "<NL> indentexpr="&inde "<NL> expandtab="&et
-             \ " ts="&ts " sts="&sts " sw="&sw
-command XX   :tabedit ++bin $HOME/.vimrc
-
-"////////////////////////////////////////////////////////////////////////////
-
-"-- ----------------------------------------------------------------------------
-"-- https://urldefense.proofpoint.com/v2/url?u=http-3A__stackoverflow.com_users_249630_lucapette&d=BQIGaQ&c=kRG5nTkfHQDBBUG6z7u8nA&r=wjrE5ng17Wy1xsV1d8IVrso_I0TIchVSH2KuSGdaW6c&m=TwHFS4P497S2gmREGcDHeFNcHuJBkrefKvvXLo0kXi0&s=Jkwp7pQfKT1jlsCJHNrRdjL-dXAws9yQ36AZ89NQFJg&e=
-"-- https://urldefense.proofpoint.com/v2/url?u=http-3A__stackoverflow.com_questions_9212340_is-2Dthere-2Da-2Dvim-2Dplugin-2Dfor-2Dpreview-2Dmarkdown-2Dfile&d=BQIGaQ&c=kRG5nTkfHQDBBUG6z7u8nA&r=wjrE5ng17Wy1xsV1d8IVrso_I0TIchVSH2KuSGdaW6c&m=TwHFS4P497S2gmREGcDHeFNcHuJBkrefKvvXLo0kXi0&s=wjshbNFo5UVxIJYxZ7I_4Tv-SoJo2cCZs1xU_k3BK3c&e=
-"-- ----------------------------------------------------------------------------
-function MarkdownPreview()
-  silent update
-  let output_name = tempname() . '.html'
-
-  let file_header = ['<html>', '<head>',
-        \ '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">',
-        \ '<title>'.expand('%:p').'</title>',
-        \ '<link rel="stylesheet" type="text/css" href="https://urldefense.proofpoint.com/v2/url?u=http-3A__yui.yahooapis.com_3.3.0_build_cssreset_reset-2Dmin.css&d=BQIGaQ&c=kRG5nTkfHQDBBUG6z7u8nA&r=wjrE5ng17Wy1xsV1d8IVrso_I0TIchVSH2KuSGdaW6c&m=TwHFS4P497S2gmREGcDHeFNcHuJBkrefKvvXLo0kXi0&s=EK9ePBZ2rnceDiIoRtKdG4bQ9-izOf0V3nbbFlphX0o&e= ">',
-        \ '<link rel="stylesheet" type="text/css" href="https://urldefense.proofpoint.com/v2/url?u=http-3A__yui.yahooapis.com_3.3.0_build_cssbase_base-2Dmin.css&d=BQIGaQ&c=kRG5nTkfHQDBBUG6z7u8nA&r=wjrE5ng17Wy1xsV1d8IVrso_I0TIchVSH2KuSGdaW6c&m=TwHFS4P497S2gmREGcDHeFNcHuJBkrefKvvXLo0kXi0&s=RvcoS1InvUILkSQgHCCUW8XBjrZducvhjoWZNmlRRFc&e= ">',
-        \ '<link rel="stylesheet" type="text/css" href="https://urldefense.proofpoint.com/v2/url?u=http-3A__yui.yahooapis.com_3.3.0_build_cssfonts_fonts-2Dmin.css&d=BQIGaQ&c=kRG5nTkfHQDBBUG6z7u8nA&r=wjrE5ng17Wy1xsV1d8IVrso_I0TIchVSH2KuSGdaW6c&m=TwHFS4P497S2gmREGcDHeFNcHuJBkrefKvvXLo0kXi0&s=8rp5-P7bvhZmYw7Ww1a04j--MFBBmMyX067ynweKpYQ&e= ">',
-        \ '<style>body{padding:20px;}div#container{background-color:#F2F2F2;padding:0 20px;margin:0px;border:solid #D0D0D0 1px;}</style>',
-        \ '</head>', '<body>', '<div id="container">']
-
-  call writefile(file_header, output_name)
-
-  silent exec '!Markdown.pl "' . expand('%:p') . '" >> "' . output_name . '"'
-
-  silent exec '!echo "</div></body></html>" >> "' . output_name . '"'
-
-  silent exec '!cmd /c start "' . output_name . '" &'
-endfunction
-
-inoremap <buffer> <F7> <ESC>:call MarkdownPreview()<CR>
-nmap <buffer> <F7> :call MarkdownPreview()<CR>
-
-" Put these in an autocmd group, so that we can delete them easily.
-augroup vimrcEx
-au!
-
-  " :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  " Use a timestamp as a backup extension
-  " And strip trailing spaces before saving to a file
-  " :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  au BufWritePre * let &bex = '-' . strftime('%Y.%m.%d.%H%M') . '~'
-  au BufWritePre * %g/\s\+$/s///g
-
-  " :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  " For all text files set 'textwidth' to 80 characters.
-  " :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  autocmd FileType text setlocal textwidth=80
-
-  " :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  " When editing a file, always jump to the last known cursor position.
-  " Don't do it when the position is invalid or when inside an event handler
-  " (happens when dropping a file on gvim).
-  " :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  autocmd BufReadPost *
+if has("autocmd")
+  " ON EDITING A FILE-> Jump to last known cursor position.
+  """ Don't do it when position is invalid or when inside an
+  """ event handler (happens when dropping a file on gvim).
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  autocmd vimrc BufReadPost *
     \ if line("'\"") > 0 && line("'\"") <= line("$") |
-    \		exe "normal! g`\"" |
+    \	  exe "normal! g`\"" |
     \ endif
 
-  " :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  " tweak the screen for Orace SQLPlus editing...
-  " :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  autocmd BufReadPre _sqlplus.sql set lines=24
+  " MODELINE-> I want my freakin modeline
+  """ (hack to force ':nmap gxx' to process the modeline)
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  " autocmd vimrc TerminalOpen * set modeline
+  " autocmd vimrc BufRead      * set modeline
 
-  " :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  " I get really tired of typing this all the time
-  " :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  autocmd BufWinEnter * syn sync fromstart
+  " ON *.md FILES-> default to MarkDown (not Modula-2)
+  autocmd vimrc BufNewFile,BufReadPost *.md set filetype=markdown
 
-  " :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  " various...
-  " :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  autocmd FileType Markdown nmap <leader>md  :call Markdown() <Enter>
-  autocmd FileType html     nmap <leader>tv  :call TidyVim() <Enter>
-  autocmd FileType sql      nmap <leader>sfc :call SQLFixCase() <Enter>
-  autocmd FileType sql      command SQLFixCase :call SQLFixCase()
+  " ON ALL FILETYPES (I got really tired of typing this all the time)
+  autocmd vimrc FileType * syn sync fromstart
 
-  " :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  " FISH, Finally a shell for the 90's
-  " Set up :make to use fish for syntax checking.
-  " Enable folding of block structures in fish.
-  " :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  autocmd FileType fish     compiler fish
-  autocmd FileType fish     setlocal textwidth=79
-  autocmd FileType fish     setlocal foldmethod=expr
-augroup END
+  " ON TEXT FILES-> Set 'textwidth' to 80 characters.
+  autocmd vimrc FileType text setlocal textwidth=80
 
-"////////////////////////////////////////////////////////////////////////////
-"/// WHEN STARTED AS "EVIM", EVIM.VIM WILL ALREADY HAVE DONE THESE SETTINGS.
-"////////////////////////////////////////////////////////////////////////////
-if v:progname =~? "evim"
-  finish
-endif
-
-" Only define the function(s) and commands once.
-if exists("*MyDiff")
-  finish
-endif
-
-function MyPrintHeader()
-  return '%<%f%h%m%=' . strftime("%Y.%m.%d %H:%M") . 'Page %N '
-endfunction
-
-"-----------------------------------------------------------------------------
-"-- Convenient command to see the difference between the current buffer and the
-"-- file it was loaded from, thus the changes you made.
-"-----------------------------------------------------------------------------
-command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
-    \ | wincmd p | diffthis
-
-"-- set diffexpr=MyDiff()
-function MyDiff()
-  let opt = '-a --binary '
-  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-  let arg1 = v:fname_in
-  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-  let arg2 = v:fname_new
-  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-  let arg3 = v:fname_out
-  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-  let eq = ''
-  if $VIMRUNTIME =~ ' '
-    if &sh =~ '\<cmd'
-      let cmd = '""' . $VIMRUNTIME . '\diff"'
-      let eq = '"'
-    else
-      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-    endif
-  else
-    let cmd = $VIMRUNTIME . '\diff'
+  " ON HELP FILES
+  if exists("colorcolumn")
+    autocmd vimrc FileType help  setlocal colorcolumn=0 nocursorline
   endif
-  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
-endfunction
+  if has("folding")
+    autocmd vimrc FileType help,netrw  setlocal foldcolumn=0
+  endif
+  if has("signs")
+    autocmd vimrc FileType help,netrw  setlocal signcolumn=auto
+  endif
 
-".eof.
+  " ON VIM FILES-> Set tabstops
+  autocmd vimrc FileType vim setlocal ts=2 sts=2 sw=2 expandtab
+
+  " ON SHELL SCRIPTS-> Set tabstops
+  autocmd vimrc FileType sh setlocal ts=4 sts=4 sw=4 expandtab
+
+endif
+"}}}
+
+" FILE BACKUP & SAVE LOGIC  {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" FUNCTION StripTrailingWhitespace   {{{2
+""" Strip trailing whitespace, and remember cursor position
+""" Thank you https://github.com/spicycode/Vimlander-2-The-Quickening
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if ! exists("*My_StripTrailingWhitespaces")
+  function My_StripTrailingWhitespaces()
+    let l:l = line(".")
+    let l:c = col(".")
+    %g/\s\+$/s///e
+    call cursor(l:l, l:c)
+    unlet l:l l:c
+  endfunction
+endif  " }}}
+
+if has("autocmd")
+  " ON FILE SAVE-> Strip trailing whitespace on save
+  """ Thank you https://github.com/spicycode/Vimlander-2-The-Quickening
+  autocmd vimrc BufWritePre * :call My_StripTrailingWhitespaces()
+endif
+
+if has("vms")
+  set nobackup    " do not keep a backup file, use versions instead
+else
+  " Save backups in directory $HOME/tmp/YYYY-MM.vim  --  make dir as needed
+  "------------------------------------------------------------------------
+  let s:my_bkdir = $HOME . '/tmp/' . strftime('%Y-%m') . '.vim'
+  if empty(glob(s:my_bkdir))
+    execute "silent !mkdir -p " . s:my_bkdir
+  endif
+  let &backupdir = s:my_bkdir
+  unlet s:my_bkdir
+  set backup    " keep a backup file
+  if has("autocmd")
+    " Use a timestamp as a backup extension
+  "------------------------------------------------------------------------
+    autocmd vimrc BufWritePre * let &bex = '.' . strftime('%Y-%m-%d_%H%M') . '~'
+  endif
+endif  " }}}
+
+" SYNTASTIC   {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if exists("g:rr_use_syntastic") && g:rr_use_syntastic
+  " @see :tab h syntastic.txt
+  " @see :tab h syntastic-checkers
+  " @see http://www.vim.org/scripts/script.php?script_id=2736
+
+  "" ENABLE SELECTED SYNTAX CHECKERS
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  let g:syntastic_lua_checkers = ['luac','luacheck']
+  let g:syntastic_vim_checkers = ['vimlint']
+  let g:syntastic_yaml_checkers = ['yamllint']
+
+  "" ADD SYNTASTIC TO STATUSLINE
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  if has("statusline")
+    set statusline+=%#warningmsg#
+    set statusline+=%{SyntasticStatuslineFlag()}
+    set statusline+=%*
+  endif
+
+  "" ENABLE SYNTASTIC 'SIGNS'
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  if has("signs")
+    set signcolumn=yes  " always display the sign column
+    let g:syntastic_enable_signs = 1
+  endif
+
+  "" ENABLE BALLOON MESSAGES
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  if has("balloon_eval_term") || has("balloon_eval")
+    let g:syntastic_enable_balloons = 1
+  endif
+
+  "" TWEAK SYNTASTIC SETTINGS
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  let g:syntastic_always_populate_loc_list = 1
+  let g:syntastic_auto_loc_list = 1
+  let g:syntastic_check_on_open = 0
+  let g:syntastic_check_on_wq = 0
+  let g:syntastic_aggregate_errors = 1
+  let g:syntastic_echo_current_error = 1
+  let g:syntastic_cursor_column = 0
+  let g:syntastic_auto_jump = 1
+endif  " }}}
+
+" SQL SYNTAX & PLUGIN Settings   {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if exists("g:rr_use_sql") && g:rr_use_sql && ! exists("*SQLFixCase")
+  "////////////////////////////////////////////////////////////////////////////
+  "/// DBEXT PLUGIN SETTINGS and CONNECTION PROFILES
+  "////////////////////////////////////////////////////////////////////////////
+
+  "" SQL: sample dbext modeline...
+  "" --  dbext:profile=p411_dv03737
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  let g:dbext_default_profile_tutorial     = 'type=SQLITE:SQLITE_bin=/usr/bin/sqlite3:host=local:dbname=~/proj/aba_report/sql/tutorial.db'
+  let g:dbext_default_use_result_buffer     = 1
+  let g:dbext_default_use_sep_result_buffer = 0
+  let g:dbext_default_replace_title         = 0
+  let g:dbext_default_use_win32_filenames   = 1
+  let g:dbext_default_window_use_horiz      = 1
+  let g:dbext_default_window_use_bottom     = 0
+  let g:dbext_default_use_sep_result_buffer = 1
+  let g:dbext_default_replace_title = 1
+  let g:dbext_default_use_win32_filenames = 1
+  let g:dbext_default_window_use_horiz = 0
+  let g:dbext_default_window_use_right = 1
+  let g:dbext_default_window_width = 30
+
+  "" SQLUTIL PLUGIN SETTINGS
+  """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  let g:sqlutil_keyword_case = '\U'
+  let g:sqlutil_indent_nested_blocks = 1
+  let g:sqlutil_wrap_long_lines = 1
+  let g:sqlutil_split_unbalanced_paran = 1
+
+  if has("autocmd")
+    " for Oracle SQLPlus editing...
+    autocmd vimrc BufReadPre _sqlplus.sql set lines=24
+  endif
+
+  "" SQLFixCase
+  """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  command SQLFixCase :call SQLFixCase()
+  nmap gfs :call SQLFixCase() <Enter>
+
+  function SQLFixCase()
+    "" UPPERCASE SQL and SQL*Plus keywords and column/table qualifiers
+    "" Camelcase the SQL Column Names
+    "" (skips lines containing comments and lines containing a string literal)
+    "" ln 01. mark current location in document
+    "" ln 02. lowercase everything
+    "" ln 03. title case column names
+    "" ln 04. uppercase 2 char 'chunks'
+    "" ln 05-11. uppercase common sql and sql*plus keywords
+    "" ln 12. uppercase column/table qualifiers - non-blank text directly preceding a dot.
+    "" ln 13. uppercase table aliases in from-clause
+    "" ln 14. return to previously marked location in document
+    :normal mz
+    :silent! g!/\/\*\|\*\/\|^ *\*\|'\|"|--/s/[A-Z]/\L&/g
+    :silent! g!/\/\*\|\*\/\|^ *\*\|'\|"|--/s/\v([A-Za-z0-9_]+\.)@!(_|\.|<)@<=[a-z]/\u&/g
+    :silent! g!/\/\*\|\*\/\|^ *\*\|'\|"|--/s/\v[A-Z][a-z]([ _,\t\n])@=/\U&/g
+
+    :silent! g!/\/\*\|\*\/\|^ *\*\|'\|"|--/s/\v<(select|update|insert)>/\U&/gi
+    :silent! g!/\/\*\|\*\/\|^ *\*\|'\|"|--/s/\v<(create|delete|alter)>/\U&/gi
+    :silent! g!/\/\*\|\*\/\|^ *\*\|'\|"|--/s/\v<(union|minus|commit|distinct)>/\U&/gi
+    :silent! g!/\/\*\|\*\/\|^ *\*\|'\|"|--/s/\v<(from|where|group|having)>/\U&/gi
+    :silent! g!/\/\*\|\*\/\|^ *\*\|'\|"|--/s/\v<(order|by|asc|desc|nulls)>/\U&/gi
+    :silent! g!/\/\*\|\*\/\|^ *\*\|'\|"|--/s/\v<(and|not|null|in|is|as)>/\U&/gi
+    :silent! g!/\/\*\|\*\/\|^ *\*\|'\|"|--/s/\v<(set|first|into)>/\U&/gi
+
+    :silent! g!/\/\*\|\*\/\|^ *\*\|'\|"|--/s/\v([a-z0-9_]+)(\.)@=/\U&/gi
+    :silent! g!/\/\*\|\*\/\|^ *\*\|'\|"|--/s/\v(([A-Z0-9_]+)(\.)([A-Za-z0-9_]+)( +))@<=<([A-Z][a-z0-9]+)>/\U&/gi
+    :normal `z
+  endfunction
+endif   " }}}
+
+" MARKDOWN SYNTAX  {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Only define the function(s) and commands once.
+if exists("g:rr_use_markdown") && g:rr_use_markdown && ! exists("*Markdown")
+  command HI  :echon " autoindent="&ai " smartindent="&si " cindent="&ci
+               \ " cpoptions="&cpo "<NL> indentexpr="&inde "<NL> expandtab="&et
+               \ " ts="&ts " sts="&sts " sw="&sw
+
+  let g:markdown_minlines = 100
+  let g:markdown_fenced_languages = ['bash=sh', 'css', 'javascript', 'js=javascript', 'json=javascript', 'vim', 'xml']
+  let g:scratch_filetype = 'markdown'
+  let g:scratch_autohide = &hidden
+  let g:scratch_insert_autohide = 0
+
+  function Markdown()
+    ":silent exec '!Markdown.pl --html4tags "' . expand('%:p') . '" > "' . expand('%:p') . '.html"'
+    if has("X11")
+      """ if ! exists(expand("%:p:h") . "/html")
+      """   :silent exec '!mkdir "' . expand("%:p:h") . '/html"'
+      """ endif
+      """ :silent exec '!pandoc -f markdown -t html --ascii -S --email-obfuscation=none --section-divs --output $(cygpath -w "' . expand('%:p:h') . "/html/" . expand("%:p:t:r") . '.html") $(cygpath -w "' . expand('%:p') . '")'
+      :silent exec '!pandoc -f markdown -t html --ascii -S --email-obfuscation=none --section-divs --output $(cygpath -w "' . expand('%:p:h') . "/" . expand("%:p:t:r") . '.html") $(cygpath -w "' . expand('%:p') . '")'
+    else
+      """ if ! exists(expand("%:p:h") . "\\html")
+      """   :silent exec '!mkdir "' . expand("%:p:h") . '\\html"'
+      """ endif
+      """ :silent exec '!pandoc -f markdown -t html --ascii -S --email-obfuscation=none --section-divs --output "' . expand('%:p:h') . "\\html\\" . expand("%:p:t:r") . '.html" "' . expand('%:p') . '"'
+      :silent exec '!pandoc -f markdown -t html --ascii -S --email-obfuscation=none --section-divs --output "' . expand('%:p:h') . "\\" . expand("%:p:t:r") . '.html" "' . expand('%:p') . '"'
+    endif
+    :echomsg "[pandoc] See file '" . expand('%:p:~:.:r') . ".html'"
+  endfunction
+
+  "-- ----------------------------------------------------------------------------
+  "-- https://stackoverflow.com/users/249630/lucapette
+  "-- https://stackoverflow.com/questions/9212340/is-there-a-vim-plugin-for-previewing-markdown-files
+  "-- ----------------------------------------------------------------------------
+  function MarkdownPreview()
+    silent update
+    let output_name = tempname() . '.html'
+
+    let file_header = ['<html>', '<head>',
+          \ '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">',
+          \ '<title>'.expand('%:p').'</title>',
+          \ '<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.3.0/build/cssreset/reset-min.css">',
+          \ '<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.3.0/build/cssbase/base-min.css">',
+          \ '<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.3.0/build/cssfonts/fonts-min.css">',
+          \ '<style>body{padding:20px;}div#container{background-color:#F2F2F2;padding:0 20px;margin:0px;border:solid #D0D0D0 1px;}</style>',
+          \ '</head>', '<body>', '<div id="container">']
+
+    call writefile(file_header, output_name)
+
+    silent exec '!Markdown.pl "' . expand('%:p') . '" >> "' . output_name . '"'
+    silent exec '!echo "</div></body></html>" >> "' . output_name . '"'
+    silent exec '!cmd /c start "' . output_name . '" &'
+  endfunction
+
+  inoremap <buffer> <F7> <ESC>:call MarkdownPreview()<CR>
+  nmap <buffer> <F7> :call MarkdownPreview()<CR>
+endif   " }}}
+
+" FUNCTION MYDIFF   {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if ! exists("*MyDiff")
+  " Only define the function(s) and commands once.
+
+  "-----------------------------------------------------------------------------
+  "-- Convenient command to see the difference between the current buffer and the
+  "-- file it was loaded from, thus the changes you made.
+  "-----------------------------------------------------------------------------
+  command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
+      \ | wincmd p | diffthis
+
+  "-- set diffexpr=MyDiff()
+  function MyDiff()
+    let opt = '-a --binary '
+    if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+    if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+    let arg1 = v:fname_in
+    if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
+    let arg2 = v:fname_new
+    if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
+    let arg3 = v:fname_out
+    if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
+    let eq = ''
+    if $VIMRUNTIME =~ ' '
+      if &sh =~ '\<cmd'
+        let cmd = '""' . $VIMRUNTIME . '\diff"'
+        let eq = '"'
+      else
+        let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+      endif
+    else
+      let cmd = $VIMRUNTIME . '\diff'
+    endif
+    silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
+  endfunction
+endif  " }}}
+
+" PRINTING Settings  "{{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set printfont=Courier_New:h9
+set printoptions=left:0.3in,right:0.25in,duplex:on,portrait:y
+set printheader=%<%f%h%m%=%{strftime('%c')}\ \ \ \ Page\ %N "}}}
+
+" WHAT TO SAVE IN ':MKSESSION'  {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if v:version > 700
+  set sessionoptions=blank,buffers,folds,globals,help,resize,sesdir,tabpages,winsize,winpos
+endif  "}}}
+
+" CRYPTO  {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has("cryptv")
+  set cryptmethod=blowfish
+endif "}}}
+
+" vim: set filetype=vim :
