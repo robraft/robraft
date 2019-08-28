@@ -134,13 +134,13 @@ let g:indent_guides_start_level = 2
 let g:indent_guides_auto_colors = 0
 let g:indent_guides_exclude_filetypes = ['help', 'nerdtree']
 
-if has("autocmd")
-  " ON ALL FILES
-  "" @see :tab h indent_guides.txt
-  "" @see 'nathanaelkane/vim-indent-guides'
-  autocmd vimrc VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=darkgrey guibg=#555555
-  autocmd vimrc VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=darkgrey guibg=#555555
-endif
+" if has("autocmd")
+"   " ON ALL FILES
+"   "" @see :tab h indent_guides.txt
+"   "" @see 'nathanaelkane/vim-indent-guides'
+"   autocmd vimrc VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=darkgrey guibg=#555555
+"   autocmd vimrc VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=darkgrey guibg=#555555
+" endif
 "}}}
 
 " CURSORLINE, LINE NUMBERS, SPLIT  {{{1
@@ -250,33 +250,33 @@ endif
 colorscheme default
 if $TERM != "screen"
 " colorscheme grb256    " {{{2
-if has("autocmd")
-  "" ColorColumn a pleasing light grey
-  set colorcolumn=80
-  au myColors ColorScheme grb256 hi ColorColumn ctermbg=darkgrey guibg=#333333
+" if has("autocmd")
+"   "" ColorColumn a pleasing light grey
+"   set colorcolumn=80
+"   au myColors ColorScheme grb256 hi ColorColumn ctermbg=darkgrey guibg=#333333
 
-  "" TODO Highlighting
-  au myColors ColorScheme grb256 hi Todo term=standout ctermfg=black ctermbg=yellow guifg=Blue guibg=Yellow
-  "" Tab Line
-  au myColors ColorScheme grb256 hi TabLine term=bold,reverse cterm=bold ctermfg=81 ctermbg=darkgrey gui=bold guifg=darkblue guibg=darkgrey
-  au myColors ColorScheme grb256 hi TabLineSel term=reverse cterm=bold ctermfg=black ctermbg=81 gui=bold guifg=grey guibg=darkblue
-  au myColors ColorScheme grb256 hi TabLineFill term=bold,reverse cterm=bold ctermfg=81 ctermbg=darkgrey gui=bold guifg=darkblue guibg=darkgrey
-  "" @see :tab h 'number'
-  au myColors ColorScheme grb256 hi LineNr guifg=#888888
-  " au myColors ColorScheme grb256 hi CursorLineNr
+"   "" TODO Highlighting
+"   au myColors ColorScheme grb256 hi Todo term=standout ctermfg=black ctermbg=yellow guifg=Blue guibg=Yellow
+"   "" Tab Line
+"   au myColors ColorScheme grb256 hi TabLine term=bold,reverse cterm=bold ctermfg=81 ctermbg=darkgrey gui=bold guifg=darkblue guibg=darkgrey
+"   au myColors ColorScheme grb256 hi TabLineSel term=reverse cterm=bold ctermfg=black ctermbg=81 gui=bold guifg=grey guibg=darkblue
+"   au myColors ColorScheme grb256 hi TabLineFill term=bold,reverse cterm=bold ctermfg=81 ctermbg=darkgrey gui=bold guifg=darkblue guibg=darkgrey
+"   "" @see :tab h 'number'
+"   au myColors ColorScheme grb256 hi LineNr guifg=#888888
+"   " au myColors ColorScheme grb256 hi CursorLineNr
 
-  if has("folding")
-    "" @see :tab h fold-options
-    " hi FoldColumn guibg=darkgrey guifg=white
-    au myColors ColorScheme grb256 hi FoldColumn guibg=#555555
-  endif
+"   if has("folding")
+"     "" @see :tab h fold-options
+"     " hi FoldColumn guibg=darkgrey guifg=white
+"     au myColors ColorScheme grb256 hi FoldColumn guibg=#555555
+"   endif
 
-  if has("signs")
-    "" @see :tab h 'signs'
-    au myColors ColorScheme grb256 hi SignColumn guibg=#555555
-  endif
-endif
-colorscheme grb256    " }}}
+"   if has("signs")
+"     "" @see :tab h 'signs'
+"     au myColors ColorScheme grb256 hi SignColumn guibg=#555555
+"   endif
+" endif
+" colorscheme grb256    " }}}
 
 " colorscheme gruvbox  " {{{2
 " let g:gruvbox_bold = 1

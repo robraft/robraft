@@ -81,6 +81,8 @@ if [[ -f ~/.bashrc ]] ; then
 fi
 export PATH="/usr/local/sbin:$PATH"
 
+export MANPATH=$MANPATH:/usr/local/opt/erlang/lib/erlang/man
+
 for file in /usr/local/etc/bash_completion.d/* ; do
   echo " ... sourcing: $file"
   . $file
@@ -208,9 +210,17 @@ fi
 ### pick one of the following: the alias or the function
 ## alias ll="ls -lF $LS_COLOR_PARM_ $LSGRPDIR_PARM_"
 function ll() {
-  ## mac os x -- sort dir's first, regular files last, and strip the 'total' line
-  CLICOLOR_FORCE=Y 'ls' -lFG $* | sed -Ee 's/^-/x/' -e '/^total/d' | sort --key=1.1,1.2 --key=9 | sed -Ee 's/^x/-/'
+  # mac os x
+  ### sort dir's first, regular files last, strip the 'total' line
+  ### and display using 'less' if it is more than a screenful
+  CLICOLOR_FORCE=Y 'ls' -lFG $* |
+    sed -Ee 's/^-/x/' -e '/^total/d' |
+    sort --key=1.1,1.2 --key=9 |
+    sed -Ee 's/^x/-/' |
+    'less' --quit-if-one-screen --RAW-CONTROL-CHARS --chop-long-lines
 }
+
+alias la='ll -a '
 
 ###    ENVIRONMENT VARS
 
@@ -242,6 +252,8 @@ alias    proj="cd ~/proj"
 alias      st='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
 alias     sub='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
 alias    subl='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
+alias     top='top -o cpu -O +rsize -s 10 -n 20'
+alias     vim='vim -p '
 
 ###     CONDITIONAL ALIASES
 

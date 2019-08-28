@@ -1,0 +1,9 @@
+#!/usr/local/bin/bash
+echo ''
+echo following are ways to check sha256 digest...
+echo '  /usr/bin/shasum -a 256 $1 -c $2'
+echo '  /usr/local/bin/shasum -a 256 $1 -c $2'
+echo '  /usr/bin/openssl dgst -sha256 $1'
+echo '  /usr/bin/openssl sha -sha256 $1'
+echo '  /usr/bin/openssl -sha256 $1'
+echo ''
