@@ -217,7 +217,7 @@ function ll() {
     sed -Ee 's/^-/x/' -e '/^total/d' |
     sort --key=1.1,1.2 --key=9 |
     sed -Ee 's/^x/-/' |
-    'less' --quit-if-one-screen --RAW-CONTROL-CHARS --chop-long-lines
+    'less' --quit-if-one-screen --no-init --RAW-CONTROL-CHARS --chop-long-lines
 }
 
 alias la='ll -a '
