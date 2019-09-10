@@ -1,0 +1,5 @@
+#/bin/sh
+#-- du on non-hidden dirs in cwd
+find . -maxdepth 1 -type d -iregex '\./[^.].*' -print0 |
+    xargs -L1 -0 du -hs 2>/dev/null |
+    sort -k2
